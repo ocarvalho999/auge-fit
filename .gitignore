@@ -13,3 +13,4 @@ playwright-report/
 .tmp/
 supabase/.temp/
 supabase/.branches/
+.next-e2e/

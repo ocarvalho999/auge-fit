@@ -882,7 +882,7 @@ export type Database = {
     };
     Views: { [_ in never]: never };
     Functions: {
-      admin_checkin_status: { Args: {  }; Returns: { id: string; professional_student_id: string; due_on: string; submitted_at: string; status: string }[] };
+      admin_checkin_status: { Args: Record<PropertyKey, never>; Returns: { id: string; professional_student_id: string; due_on: string; submitted_at: string; status: string }[] };
       black_slots_used: { Args: { p_professional_id: string }; Returns: number };
       can_read_plan: { Args: { p_plan_id: string }; Returns: boolean };
       can_read_plan_row: { Args: { p_kind: string; p_student_id: string; p_author: string; p_status: string }; Returns: boolean };
@@ -892,17 +892,17 @@ export type Database = {
       can_write_workout: { Args: { p_workout_id: string }; Returns: boolean };
       checkin_is_mine_as_professional: { Args: { p_checkin_id: string }; Returns: boolean };
       checkin_student: { Args: { p_checkin_id: string }; Returns: string };
-      current_professional_id: { Args: {  }; Returns: string };
+      current_professional_id: { Args: Record<PropertyKey, never>; Returns: string };
       has_consent: { Args: { p_user_id: string; p_type: string }; Returns: boolean };
       has_entitlement: { Args: { p_user_id: string; p_feature: string }; Returns: boolean };
-      is_admin: { Args: {  }; Returns: boolean };
+      is_admin: { Args: Record<PropertyKey, never>; Returns: boolean };
       is_linked_professional: { Args: { p_student_id: string }; Returns: boolean };
       link_black_student: { Args: { p_subscription_id: string; p_professional_id: string; p_actor: string }; Returns: string };
       link_is_mine_and_active: { Args: { p_link_id: string }; Returns: boolean };
       link_student: { Args: { p_link_id: string }; Returns: string };
       log_student: { Args: { p_workout_log_id: string }; Returns: string };
       photo_path_owner: { Args: { p_name: string }; Returns: string };
-      pro_is_sellable: { Args: {  }; Returns: boolean };
+      pro_is_sellable: { Args: Record<PropertyKey, never>; Returns: boolean };
       professional_can_view_photos: { Args: { p_student_id: string }; Returns: boolean };
       professional_public: { Args: { p_professional_id: string }; Returns: { full_name: string; cref_number: string; cref_uf: string }[] };
       propose_exercise_review: { Args: { p_exercise_id: string; p_instructions: string }; Returns: undefined };
