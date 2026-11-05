@@ -1,6 +1,7 @@
 // Sobe o ambiente E2E: Postgres real, emulador HTTP do Supabase e build de produção do Next.
 import { spawn, spawnSync } from "node:child_process";
 import { appendFileSync, mkdirSync } from "node:fs";
+import path from "node:path";
 import { startPostgres } from "../../../supabase/tests/support/postgres";
 import { ANON_KEY, SERVICE_KEY, startFakeSupabase } from "./fake-supabase";
 
@@ -28,13 +29,19 @@ async function main() {
     SUPABASE_SERVICE_ROLE_KEY: SERVICE_KEY,
     CRON_SECRET: "e2e-cron-secret",
     MERCADOPAGO_WEBHOOK_SECRET: "e2e-webhook-secret",
+    MERCADOPAGO_ACCESS_TOKEN: "e2e-token",
   };
 
   const next = process.platform === "win32" ? "node_modules\\.bin\\next.cmd" : "node_modules/.bin/next";
   const build = spawnSync(next, ["build"], { env, stdio: "inherit", shell: true });
   if (build.status !== 0) throw new Error("Falha no build E2E");
 
-  const app = spawn(next, ["start", "-p", String(APP_PORT)], { env, stdio: "inherit", shell: true });
+  const preload = path.join(process.cwd(), "tests", "e2e", "support", "mp-preload.cjs").replaceAll("\\", "/");
+  const app = spawn(next, ["start", "-p", String(APP_PORT)], {
+    env: { ...env, NODE_OPTIONS: `--require ${preload}` },
+    stdio: "inherit",
+    shell: true,
+  });
   app.on("exit", (code, signal) => trace(`next exit: code=${code} signal=${signal}`));
   trace("next started");
 

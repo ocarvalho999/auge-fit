@@ -49,3 +49,13 @@ Decisões não críticas adotadas sem consulta (a opção mais simples e segura)
 ## Ambiente de testes
 
 - **Instabilidade em aberto:** em 2 de cerca de 10 execuções do E2E, o `next start` de teste parou de responder no meio da suíte, sem erro no log. Depois disso, 3 execuções seguidas passaram (incluindo a suíte completa). A causa não foi encontrada. `tests/e2e/support/stack.ts` agora grava saída de processos em `.tmp/stack.log` para a próxima ocorrência. Não há indício de relação com o código do app, mas isso não está provado.
+
+## Pagamentos
+
+- **Assinatura mensal sem plano no provedor:** usa `/preapproval` sem `card_token_id`. O preço fica no nosso banco, e o fluxo com plano associado exigiria token de cartão. A entrada do cartão na página do Mercado Pago sem token não está afirmada na documentação lida: confirmar em sandbox.
+- **Valor de cancelamento enviado:** `cancelled`, como no SDK. O guia do Mercado Pago escreve `canceled`. Ao ler, o app aceita as duas; confirmar em sandbox qual a API aceita.
+- **Trocar de plano:** para trocar de mensal, é preciso cancelar a atual e assinar outra. Sem cálculo proporcional.
+- **Sem tolerância de tempo na assinatura do webhook:** o validador aceita `toleranceSeconds`, mas a documentação informa reenvios a cada 15 minutos e não diz se o `ts` é renovado. Reenvios antigos são contidos pela chave única e pela consulta à API. Reavaliar com dados reais.
+- **Pagamento depois da reserva expirar:** o acesso é honrado e a vaga volta a contar, podendo exceder a capacidade. O admin resolve no vínculo ou reembolsa.
+- **Assinatura pendente abandonada:** o registro fica como `pending`, sem efeito, para um pagamento tardio ainda ser reconhecido.
+- **E-mail de inatividade:** só para quem aceitou marketing, por precaução. Confirmar na revisão jurídica se pode ser transacional.

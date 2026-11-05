@@ -5,6 +5,7 @@ import { createHash, randomBytes, randomUUID } from "node:crypto";
 import { createServer, type IncomingMessage, type ServerResponse } from "node:http";
 import jwt from "jsonwebtoken";
 import { Pool, type PoolClient } from "pg";
+import { createFakeMercadoPago, type FakePayment } from "./fake-mercadopago";
 
 export const ANON_KEY = "e2e-anon-key";
 export const SERVICE_KEY = "e2e-service-key";
@@ -34,7 +35,9 @@ function parseSelect(input: string): Node[] {
     const inner = part.slice(open + 1, part.lastIndexOf(")"));
     const [aliasOrRel, maybeRel] = head.split(":");
     const relPart = maybeRel ?? aliasOrRel!;
-    const [rel, hint] = relPart.split("!");
+    const [rel, ...modifiers] = relPart.split("!");
+    // "inner" e "left" são modificadores do PostgREST; o resto é a chave estrangeira escolhida.
+    const hint = modifiers.find((m) => m !== "inner" && m !== "left");
     out.push({ embed: { rel: rel!, alias: maybeRel ? aliasOrRel! : rel!, hint, nodes: parseSelect(inner) } });
   };
   for (const ch of input) {
@@ -61,6 +64,7 @@ export async function startFakeSupabase(databaseUrl: string, port: number, appOr
       where c.contype = 'f' and n.nspname = 'public' and rn.nspname = 'public'`)
   ).rows;
 
+  const mp = createFakeMercadoPago(appOrigin);
   const tokens = new Map<string, { email: string; type: string }>();
   const lastLinks = new Map<string, string>();
   const refreshTokens = new Map<string, string>();
@@ -534,6 +538,18 @@ export async function startFakeSupabase(databaseUrl: string, port: number, appOr
       if (url.pathname === "/__test/sql") {
         const { sql, params } = JSON.parse(body.toString()) as { sql: string; params?: unknown[] };
         return send(res, 200, (await pool.query(sql, params)).rows);
+      }
+      if (url.pathname.startsWith("/__mp/")) {
+        const { status, json } = await mp.handle(req.method ?? "GET", url.pathname.slice("/__mp".length), body.length ? JSON.parse(body.toString()) : undefined);
+        return send(res, status, json);
+      }
+      if (url.pathname === "/__test/mp/payment") {
+        const payment = JSON.parse(body.toString()) as FakePayment;
+        mp.payments.set(payment.id, payment);
+        return send(res, 200, payment);
+      }
+      if (url.pathname === "/__test/mp/state") {
+        return send(res, 200, { preferences: mp.preferences, preapprovals: [...mp.preapprovals.values()], refunds: mp.refunds });
       }
       if (url.pathname === "/__test/link") {
         const key = `${url.searchParams.get("email")}:${url.searchParams.get("type")}`;

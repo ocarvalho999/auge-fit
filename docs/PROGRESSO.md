@@ -43,3 +43,10 @@ Só consta aqui o que foi executado e visto passando.
 - **Correção importante:** o React 19 limpava os campos dos formulários depois de cada envio, então um erro de validação apagava o que a pessoa digitou, inclusive no cadastro. Corrigido no `ActionForm` e coberto por teste.
 - **Mudança de projeto:** o convite passou a usar a tabela `staff_invites`, gravada só pelo servidor, em vez de `app_metadata`, para não depender da ordem interna de gravação do Supabase Auth.
 - **Não verificado:** envio real do convite por e-mail (sem Resend, o painel avisa que não enviou) e `generateLink` contra o Supabase Auth real.
+
+## Fase 7. Pagamentos e assinaturas
+
+- Checkout (assinatura mensal sem token de cartão, pagamento único Pix ou cartão), webhook com validador oficial do SDK, carência, cancelamento em autoatendimento, reembolso, histórico, cupons, vagas do Black com reserva de 30 minutos, lista de espera e rotina diária protegida por segredo.
+- **Critério da fase, na alternativa sem credenciais:** testes com assinatura simulada e pendência declarada. **Nada foi testado no sandbox real do Mercado Pago**, porque não há credenciais. Veja `docs/CONFIGURACAO_EXTERNA.md`.
+- Testes passando, com Postgres real e só o Mercado Pago simulado: assinatura inválida, ausente e de outro `data.id`, evento repetido, evento fora de ordem, valor adulterado, recusa, falha do provedor com reprocessamento, reembolso, carência, vencimento, idempotência da rotina e corrida pela última vaga do Black com 12 conexões simultâneas.
+- E2E passando: assinatura com cupom, "aguardando confirmação" sem liberar acesso, liberação só pelo webhook, reembolso pelo admin, cancelamento, Black esgotado com lista de espera.
