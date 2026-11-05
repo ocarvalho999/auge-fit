@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import {
   addMonths,
+  checkoutCopy,
   couponProblem,
   discountedCents,
   isWithinGuarantee,
@@ -81,6 +82,20 @@ describe("cupom", () => {
     expect(couponProblem({ ...ok, discount_percent: 100 }, 0, false, now)).not.toBeNull();
   });
   it("recusa segundo uso da mesma pessoa", () => expect(couponProblem(ok, 1, true, now)).toBe("Você já usou este cupom."));
+});
+
+describe("descrição no checkout", () => {
+  it("Pro e Black citam o FitBrother; Basic não", () => {
+    expect(checkoutCopy("pro", "Pro").description).toContain("FitBrother");
+    expect(checkoutCopy("black", "Black").description).toContain("FitBrother");
+    expect(checkoutCopy("basic", "Basic").description).not.toContain("FitBrother");
+  });
+  it("não promete dieta nem resultado", () => {
+    for (const code of ["basic", "pro", "black"]) {
+      const { reason } = checkoutCopy(code, code);
+      expect(reason.toLowerCase()).not.toMatch(/dieta|emagre|resultado|garant/);
+    }
+  });
 });
 
 describe("chave do evento", () => {

@@ -10,7 +10,7 @@ import { isRateLimited } from "@/lib/rate-limit";
 import { audit, createAdminClient } from "@/lib/supabase/admin";
 import { createClient } from "@/lib/supabase/server";
 import { assertRole } from "@/features/auth/session";
-import { couponProblem, discountedCents, isWithinGuarantee } from "./domain";
+import { checkoutCopy, couponProblem, discountedCents, isWithinGuarantee } from "./domain";
 
 const checkoutSchema = z.object({
   priceId: z.uuid(),
@@ -101,7 +101,7 @@ export async function startCheckoutAction(_prev: ActionState, form: FormData): P
   const returnUrl = `${appUrl}/assinatura/retorno`;
   // O provedor só aceita notificação em HTTPS; em desenvolvimento local, o campo fica de fora.
   const notificationUrl = appUrl.startsWith("https://") ? `${appUrl}/api/webhooks/mercadopago` : undefined;
-  const title = `Auge Fit ${price.plans.name}`;
+  const { title, description, reason } = checkoutCopy(price.plans.code, price.plans.name);
 
   let reservationId: string | null = null;
   if (price.plans.code === "black") {
@@ -121,7 +121,7 @@ export async function startCheckoutAction(_prev: ActionState, form: FormData): P
       // Sem card_token_id: o cartão é digitado na página do Mercado Pago e nunca passa pelo nosso servidor.
       const created = await mercadoPago.preApproval().create({
         body: {
-          reason: title,
+          reason,
           external_reference: sub.id,
           payer_email: email,
           back_url: returnUrl,
@@ -135,7 +135,7 @@ export async function startCheckoutAction(_prev: ActionState, form: FormData): P
     } else {
       const created = await mercadoPago.preference().create({
         body: {
-          items: [{ id: price.id, title, quantity: 1, unit_price: amount / 100, currency_id: "BRL" }],
+          items: [{ id: price.id, title, description, quantity: 1, unit_price: amount / 100, currency_id: "BRL" }],
           external_reference: sub.id,
           notification_url: notificationUrl,
           back_urls: { success: returnUrl, pending: returnUrl, failure: returnUrl },

@@ -27,6 +27,12 @@ test("landing mostra preços do banco, garantia e Pro em breve", async ({ page }
   await expect(page.getByRole("heading", { name: "Garantia de 7 dias" })).toBeVisible();
   // Sem 3 programas revisados publicados, o Pro não pode ser vendido.
   await expect(page.getByText("Em breve")).toBeVisible();
+  // FitBrother no Pro e no Black, riscado só no Basic.
+  const fitbrother = page.getByText(/^App FitBrother:/);
+  await expect(fitbrother).toHaveCount(3);
+  await expect(fitbrother.nth(0)).toHaveClass(/line-through/);
+  await expect(fitbrother.nth(1)).not.toHaveClass(/line-through/);
+  await expect(fitbrother.nth(2)).not.toHaveClass(/line-through/);
   await expect(page.getByRole("link", { name: "Assinar Pro" })).toHaveCount(0);
   await expect(page.getByRole("link", { name: "Assinar Basic" })).toBeVisible();
 });
