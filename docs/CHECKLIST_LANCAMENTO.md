@@ -29,8 +29,9 @@ Situação em 2026-11-05: **o app não foi publicado.** Os itens marcados foram 
 ## Publicação
 
 - [x] Código no repositório público `ocarvalho999/auge-fit`, com CI verde, inclusive o E2E no Linux
-- [ ] Projeto de homologação no Supabase: `supabase link` e `supabase db push`
-- [ ] Projeto na Vercel com as variáveis de homologação, conferir o build
+- [x] Projeto de homologação no Supabase, em São Paulo, com migrations e seed aplicados e conferidos
+- [x] Projeto na Vercel com as variáveis de homologação, publicado em https://auge-fit.vercel.app
+- [ ] URLs do Supabase Auth (Site URL e redirecionamento) apontando para a Vercel
 - [ ] Repetir todos os bloqueios em homologação
 - [ ] Projeto de produção no Supabase, na região de São Paulo: `supabase db push` e rodar `supabase/seed.sql` uma vez
 - [ ] Variáveis de produção inseridas pelo fundador direto na Vercel

@@ -79,3 +79,11 @@ Só consta aqui o que foi executado e visto passando.
 - CI verde na primeira execução no GitHub, nos jobs `check` e `e2e`. Foi a primeira vez que a suíte rodou no Linux, com Chromium.
 - O primeiro envio foi recusado com `fatal error in commit_refs_rules`. Um envio sem arquivo de workflow passou e o mesmo envio com workflow foi recusado. Depois da autorização do fundador, o envio passou pelo Gerenciador de Credenciais do Windows. O token do `gh` continua sem o escopo `workflow`, e o motivo exato da mudança não foi confirmado.
 - Vercel, Supabase, Mercado Pago, Resend e domínio seguem pendentes: dependem das contas do fundador.
+
+### Homologação publicada (2026-11-05)
+
+- **Supabase:** projeto `kdofupnjibcivtwlrjhj` em São Paulo (`sa-east-1`). As 5 migrations e o seed foram aplicados pelo fundador, que confirmou no terminal. Conferido em modo só leitura: 29 tabelas, todas com RLS; preços corretos; nenhum usuário; bucket de fotos privado com 3 políticas; gatilho de cadastro instalado.
+- **Vercel:** projeto `auge-fit`, ligado ao GitHub (cada envio para a `main` publica), em https://auge-fit.vercel.app, com Node 24. Variáveis da homologação cadastradas pela linha de comando, sem exibir valores; as secretas estão marcadas como sensíveis.
+- **Conferido no ar:** páginas públicas respondem; preços e economia do trimestre vêm do banco real; cabeçalhos de segurança e CSP presentes, sem erro no console; rotas protegidas redirecionam; rotina diária e webhook recusam chamadas sem segredo.
+- **RLS no banco real, como visitante:** só planos e preços aparecem; as demais tabelas voltam vazias; alterar preço não muda nada; reservar vaga é recusado.
+- **Não conferido no ar:** cadastro, login, recuperação de senha, upload de fotos e pagamento. Falta configurar as URLs do Supabase Auth e as credenciais do Mercado Pago.
