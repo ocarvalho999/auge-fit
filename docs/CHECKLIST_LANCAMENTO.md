@@ -21,7 +21,7 @@ Situação em 2026-11-05: **o app não foi publicado.** Os itens marcados foram 
 - [ ] **Fluxo real de autenticação:** cadastro com e-mail de verdade, recuperação de senha, convite de profissional
 - [ ] **Upload e exibição de foto** no Storage real, e exclusão de conta apagando os arquivos
 - [ ] **Revisão jurídica** de termos, privacidade, consentimentos, contrato de profissionais e reembolso; depois, tirar o aviso de rascunho em `src/components/layout/legal-page.tsx` e atualizar `DOCUMENT_VERSION` em `src/lib/legal.ts`
-- [ ] **FitBrother no Pro e no Black:** definir como o assinante recebe o acesso, ter acordo por escrito se o app for de terceiro e confirmar com o nutricionista responsável o que pode ser anunciado. Hoje o Auge Fit só anuncia; não libera nada no app
+- [ ] **FitBrother no Pro e no Black:** definir como o assinante recebe o acesso, formalizar por escrito a parceria entre as empresas e confirmar com o nutricionista responsável o que pode ser anunciado. Hoje o Auge Fit só anuncia; não libera nada no app
 - [ ] **Biblioteca de exercícios revisada:** sem ela, ninguém monta treino
 - [ ] **Profissional com CREF conferido e contrato assinado**, antes de vender o Black
 - [ ] **Teste de restauração de backup**, confirmando se cobre as fotos
