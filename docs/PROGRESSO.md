@@ -50,3 +50,15 @@ Só consta aqui o que foi executado e visto passando.
 - **Critério da fase, na alternativa sem credenciais:** testes com assinatura simulada e pendência declarada. **Nada foi testado no sandbox real do Mercado Pago**, porque não há credenciais. Veja `docs/CONFIGURACAO_EXTERNA.md`.
 - Testes passando, com Postgres real e só o Mercado Pago simulado: assinatura inválida, ausente e de outro `data.id`, evento repetido, evento fora de ordem, valor adulterado, recusa, falha do provedor com reprocessamento, reembolso, carência, vencimento, idempotência da rotina e corrida pela última vaga do Black com 12 conexões simultâneas.
 - E2E passando: assinatura com cupom, "aguardando confirmação" sem liberar acesso, liberação só pelo webhook, reembolso pelo admin, cancelamento, Black esgotado com lista de espera.
+
+## Fase 8. Segurança e testes
+
+- CSP com nonce por resposta, HSTS e demais cabeçalhos; sessão em cookie `HttpOnly` e `SameSite=Lax`; limites de uso separados por IP e por pessoa; varredura de segredos em gancho de commit e no CI; Sentry com toda a coleta desligada e filtro antes do envio.
+- Testes passando: nonce único e aplicado, fluxo do aluno sem bloqueio da CSP, sessão inacessível ao JavaScript, nenhum segredo no JavaScript enviado ao navegador, erro genérico de login, limite de tentativas, recuperação e cadastro sem revelar e-mail, menor de 18 anos, conta suspensa, redirecionamento aberto.
+- **Achados corrigidos na revisão de permissões:**
+  - A exportação de dados dependia só da RLS em `set_logs`; um profissional receberia dados dos alunos vinculados. Agora filtra pelo dono, com teste.
+  - Conta suspensa só era barrada na tela. Agora perde o direito também no banco (`has_entitlement`), com teste.
+  - No Sentry 11, `sendDefaultPii` não existe mais e o padrão coleta cookies, cabeçalhos e corpos. A coleta foi desligada item por item.
+  - Pagamento do Black depois de a reserva expirar não voltava a ocupar a vaga.
+- **Auditoria de dependências (`npm audit`):** 0 vulnerabilidades nas dependências de produção. 8 moderadas nas de desenvolvimento, todas ligadas a `minimatch` nas ferramentas de lint; não vão para o servidor nem para o navegador.
+- **Não verificado:** recebimento real de erros no Sentry (sem DSN); cabeçalhos e HSTS sobre HTTPS real.

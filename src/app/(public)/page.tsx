@@ -71,7 +71,8 @@ function PlanCard({ plan, proSellable, waitlist }: { plan: PlanWithPrices; proSe
   );
 }
 
-export default async function LandingPage() {
+export default async function LandingPage({ searchParams }: { searchParams: Promise<{ conta?: string }> }) {
+  const { conta } = await searchParams;
   const catalog = await getCatalog();
   const waitlist = process.env.WAITLIST_ENABLED === "true";
 
@@ -85,6 +86,7 @@ export default async function LandingPage() {
       </header>
 
       <main>
+        {conta === "excluida" ? <Alert tone="success">Sua conta e seus dados foram excluídos.</Alert> : null}
         <section className="py-10 sm:py-16">
           <h1 className="max-w-3xl text-4xl leading-tight font-extrabold tracking-tight sm:text-5xl">
             Registre cada treino. Enxergue <span className="text-accent">sua evolução</span>.

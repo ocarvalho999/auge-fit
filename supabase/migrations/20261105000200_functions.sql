@@ -58,6 +58,7 @@ create function public.has_entitlement(p_user_id uuid, p_feature text) returns b
 language sql stable security definer set search_path = '' as $$
   select
     ((select auth.uid()) is null or (select auth.uid()) = p_user_id or public.is_admin())
+    and exists (select 1 from public.profiles p where p.id = p_user_id and p.status = 'active')
     and exists (
       select 1
       from public.subscriptions s

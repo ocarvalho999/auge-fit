@@ -8,13 +8,18 @@ export async function GET() {
   if (!auth.user) return NextResponse.json({ error: "Não autenticado" }, { status: 401 });
   const id = auth.user.id;
 
+  const { data: ownLogs } = await supabase.from("workout_logs").select("id").eq("student_id", id);
+  const logIds = (ownLogs ?? []).map((l) => l.id);
+
   const [profile, student, consents, plans, logs, sets, measurements, photos, subscriptions, payments] = await Promise.all([
     supabase.from("profiles").select("full_name, birth_date, created_at").eq("id", id).maybeSingle(),
     supabase.from("student_profiles").select("goal, experience_level, onboarded_at").eq("profile_id", id).maybeSingle(),
     supabase.from("consents").select("type, document_version, granted_at, revoked_at").eq("profile_id", id),
     supabase.from("workout_plans").select("id, kind, name, status, created_at, workouts(name, position)").eq("student_id", id),
     supabase.from("workout_logs").select("id, workout_name, started_at, finished_at").eq("student_id", id),
-    supabase.from("set_logs").select("workout_log_id, exercise_id, set_number, weight_kg, reps, logged_at"),
+    logIds.length
+      ? supabase.from("set_logs").select("workout_log_id, exercise_id, set_number, weight_kg, reps, logged_at").in("workout_log_id", logIds)
+      : Promise.resolve({ data: [] }),
     supabase.from("body_measurements").select("*").eq("profile_id", id),
     supabase.from("progress_photos").select("pose, taken_on, created_at").eq("profile_id", id),
     supabase.from("subscriptions").select("id, status, current_period_end, created_at").eq("profile_id", id),
