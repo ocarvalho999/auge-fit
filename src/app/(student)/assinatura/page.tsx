@@ -4,7 +4,7 @@ import { ActionForm, Field, SubmitButton } from "@/components/ui/form";
 import { requireRole } from "@/features/auth/session";
 import { cancelSubscriptionAction, requestRefundAction, startCheckoutAction } from "@/features/billing/actions";
 import { FEATURE_LABELS, getCatalog } from "@/features/billing/catalog";
-import { isWithinGuarantee } from "@/features/billing/domain";
+import { isWithinGuarantee, quarterlySavingsCents } from "@/features/billing/domain";
 import { getCurrentSubscription, hasEntitlement } from "@/features/billing/entitlements";
 import { saveWhatsappAction } from "@/features/fitbrother/actions";
 import { formatCents, formatDate, INTERVAL_LABEL } from "@/lib/format";
@@ -112,6 +112,7 @@ export default async function SubscriptionPage({ searchParams }: { searchParams:
             <div className="grid gap-4 md:grid-cols-3">
               {catalog.plans.map((plan) => {
                 const unavailable = plan.code === "pro" && !catalog.proSellable;
+                const savings = quarterlySavingsCents(plan.prices);
                 return (
                   <div key={plan.id} className="rounded-xl bg-surface-2 p-3">
                     <h3 className="text-lg font-bold">{plan.name}</h3>
@@ -126,6 +127,9 @@ export default async function SubscriptionPage({ searchParams }: { searchParams:
                       plan.prices.map((price) => (
                         <ActionForm key={price.id} action={startCheckoutAction} className="mt-3 space-y-2">
                           <input type="hidden" name="priceId" value={price.id} />
+                          {price.interval === "quarter" && savings ? (
+                            <p className="text-sm font-semibold text-accent">Economize {formatCents(savings)} no trimestre</p>
+                          ) : null}
                           <Field name="coupon" label="Cupom (opcional)" maxLength={40} autoComplete="off" />
                           <SubmitButton pendingLabel="Abrindo pagamento...">
                             {`Assinar ${plan.name}: ${formatCents(price.amount_cents)} ${INTERVAL_LABEL[price.interval]}`}
