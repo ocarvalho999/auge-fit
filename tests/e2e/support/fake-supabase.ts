@@ -440,6 +440,23 @@ export async function startFakeSupabase(databaseUrl: string, port: number, appOr
 
   async function handleStorage(req: IncomingMessage, res: ServerResponse, url: URL, claims: Claims, body: Buffer) {
     const path = decodeURIComponent(url.pathname.replace("/storage/v1", ""));
+    const batch = path.match(/^\/object\/sign\/([^/]+)$/);
+    if (batch && req.method === "POST") {
+      const { expiresIn, paths } = JSON.parse(body.toString()) as { expiresIn: number; paths: string[] };
+      const bucket = batch[1]!;
+      const visible = await withRole(claims, async (c) =>
+        (await c.query<{ name: string }>(`select name from storage.objects where bucket_id = $1 and name = any($2)`, [bucket, paths])).rows.map((r) => r.name),
+      );
+      return send(
+        res,
+        200,
+        paths.map((name) =>
+          visible.includes(name)
+            ? { path: name, error: null, signedURL: `/object/sign/${bucket}/${name}?token=${jwt.sign({ bucket, name }, JWT_SECRET, { expiresIn })}` }
+            : { path: name, error: "Object not found", signedURL: null },
+        ),
+      );
+    }
     let m = path.match(/^\/object\/sign\/([^/]+)\/(.+)$/);
     if (m && req.method === "POST") {
       const [, bucket, name] = m;

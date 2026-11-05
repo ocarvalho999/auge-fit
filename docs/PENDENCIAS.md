@@ -34,3 +34,8 @@ Decisões não críticas adotadas sem consulta (a opção mais simples e segura)
 - **Limite de 10 MB x Vercel:** a Vercel limita o corpo da requisição a cerca de 4,5 MB. O app reduz a foto no aparelho antes de enviar quando ela passa de 4 MB; o limite de 10 MB continua valendo para o arquivo escolhido. Sem JavaScript, fotos acima do limite da Vercel falham.
 - **Treino do dia:** rodízio simples entre os treinos do plano mais recente, com prioridade para o planejamento prescrito. Programas do catálogo são iniciados pela tela de Treinos.
 - **Plano escolhido na landing:** `/cadastro?plano=` ainda não pré-seleciona o plano; a escolha acontece em Assinatura depois do onboarding.
+
+## Profissional
+
+- **Página inexistente com status 200:** com `loading.tsx`, o Next começa a responder antes do `notFound()`, então a rota de aluno sem vínculo devolve status 200 com a tela "Página não encontrada". Nenhum dado do aluno sai na resposta (testado). A consequência é só o código HTTP.
+- **Check-in semanal:** abre manualmente pelo profissional; a abertura automática entra com as rotinas agendadas da fase 7.
