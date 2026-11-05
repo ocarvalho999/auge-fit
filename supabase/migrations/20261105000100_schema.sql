@@ -1,6 +1,5 @@
 -- Auge Fit: tabelas. Valores em centavos, datas em timestamptz, enums por check.
 
-create extension if not exists pgcrypto;
 
 create table public.profiles (
   id uuid primary key references auth.users (id) on delete cascade,

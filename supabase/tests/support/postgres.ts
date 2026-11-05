@@ -70,7 +70,7 @@ export async function startPostgres(name: string, port: number): Promise<TestPos
     user: "postgres",
     password: "postgres",
     port,
-    persistent: false,
+    persistent: true,
     onLog: () => {},
     onError: () => {},
   });
