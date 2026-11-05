@@ -6,7 +6,7 @@ O sistema **não gera prescrições**. Treino individual, ajuste de carga e reco
 
 ## Situação do projeto
 
-O código está pronto e testado localmente, mas **nunca rodou contra o Supabase real nem contra o Mercado Pago real**, e **não foi publicado**. Veja [docs/PROGRESSO.md](docs/PROGRESSO.md) para o que foi verificado e [docs/CHECKLIST_LANCAMENTO.md](docs/CHECKLIST_LANCAMENTO.md) para o que falta antes de vender.
+O código está pronto e testado localmente, mas **nunca rodou contra o Supabase real nem contra o Mercado Pago real**, e **não foi publicado** (o código está em repositório privado no GitHub, com CI verde, mas o app não está no ar). Veja [docs/PROGRESSO.md](docs/PROGRESSO.md) para o que foi verificado e [docs/CHECKLIST_LANCAMENTO.md](docs/CHECKLIST_LANCAMENTO.md) para o que falta antes de vender.
 
 ## Stack
 

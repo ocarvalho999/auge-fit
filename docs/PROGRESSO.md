@@ -73,9 +73,9 @@ Só consta aqui o que foi executado e visto passando.
 - **Preparado:** `vercel.json` com rotina diária e região de São Paulo, job de E2E no CI e `docs/CHECKLIST_LANCAMENTO.md`.
 - **Não executado, porque depende de contas e credenciais do fundador:** publicação no GitHub, projeto na Vercel, migrations em homologação e produção, webhook de produção e domínio. O critério "checklist de lançamento conferido" **não está cumprido**: só a parte local foi conferida.
 
-### Publicação no GitHub (em andamento)
+### Publicação no GitHub
 
-- Repositório privado criado: `ocarvalho999/auge-fit`. **O código ainda não foi enviado.**
-- O GitHub recusa o envio com `fatal error in commit_refs_rules`. Causa confirmada por teste: o token do `gh` não tem o escopo `workflow`, exigido para enviar `.github/workflows`. Um envio sem workflow passou; o mesmo envio com workflow foi recusado.
-- Falta o fundador liberar o escopo com `gh auth refresh -h github.com -s workflow`. Depois: enviar `main`, torná-la a branch padrão e apagar `teste-push`, branch descartável usada no diagnóstico.
-- A suíte E2E completa passou de novo na versão final: 44 testes.
+- Código enviado ao repositório privado `ocarvalho999/auge-fit`, branch `main`. As branches `fase/*` ficaram só na máquina local; o conteúdo delas está todo na `main`.
+- CI verde na primeira execução no GitHub, nos jobs `check` e `e2e`. Foi a primeira vez que a suíte rodou no Linux, com Chromium.
+- O primeiro envio foi recusado com `fatal error in commit_refs_rules`. Um envio sem arquivo de workflow passou e o mesmo envio com workflow foi recusado. Depois da autorização do fundador, o envio passou pelo Gerenciador de Credenciais do Windows. O token do `gh` continua sem o escopo `workflow`, e o motivo exato da mudança não foi confirmado.
+- Vercel, Supabase, Mercado Pago, Resend e domínio seguem pendentes: dependem das contas do fundador.
