@@ -104,7 +104,7 @@ describe("economia do trimestre", () => {
   const quarter = (amount_cents: number) => ({ interval: "quarter", amount_cents });
   it("compara com 3 meses", () => {
     expect(quarterlySavingsCents([month(3990), quarter(9990)])).toBe(1980);
-    expect(quarterlySavingsCents([month(9700), quarter(24700)])).toBe(4400);
+    expect(quarterlySavingsCents([month(9790), quarter(24700)])).toBe(4670);
   });
   it("não mostra economia que não existe", () => {
     expect(quarterlySavingsCents([month(3000), quarter(9000)])).toBeNull();
