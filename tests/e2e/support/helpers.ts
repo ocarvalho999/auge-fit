@@ -29,6 +29,8 @@ export async function expectNoHorizontalScroll(page: Page) {
 
 /** Cadastro real pela tela, confirmação pelo link e login. */
 export async function signUpAndLogin(page: Page, email: string, password = "senha-de-teste-1") {
+  // Os testes saem todos do mesmo IP; limpar o contador evita bypass no código de produção.
+  await sql(`delete from public.rate_limits`);
   await page.goto("/cadastro");
   await page.getByLabel("Nome").fill("Pessoa de Teste");
   await page.getByLabel("E-mail").fill(email);
@@ -44,6 +46,7 @@ export async function signUpAndLogin(page: Page, email: string, password = "senh
 }
 
 export async function login(page: Page, email: string, password = "senha-de-teste-1") {
+  await sql(`delete from public.rate_limits`);
   await page.goto("/login");
   await page.getByLabel("E-mail").fill(email);
   await page.getByLabel("Senha").fill(password);
@@ -65,10 +68,11 @@ const SERVICE = "e2e-service-key";
 /** Cria profissional ou admin pela API de administração, como o servidor faria. Só para testes. */
 export async function createStaff(role: "professional" | "admin", password = "senha-de-teste-1") {
   const email = uniqueEmail(role);
+  await sql(`insert into public.staff_invites (email) values ($1)`, [email]);
   const r = await fetch(`${FAKE}/auth/v1/admin/users`, {
     method: "POST",
     headers: { authorization: `Bearer ${SERVICE}`, apikey: SERVICE, "content-type": "application/json" },
-    body: JSON.stringify({ email, password, email_confirm: true, app_metadata: { invited: true }, user_metadata: { full_name: `${role} de teste` } }),
+    body: JSON.stringify({ email, password, email_confirm: true, user_metadata: { full_name: `${role} de teste` } }),
   });
   if (!r.ok) throw new Error(`Falha ao criar ${role}: ${await r.text()}`);
   const { id } = (await r.json()) as { id: string };

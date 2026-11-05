@@ -624,6 +624,23 @@ export type Database = {
           { foreignKeyName: "set_logs_workout_log_id_fkey"; columns: ["workout_log_id"]; isOneToOne: false; referencedRelation: "workout_logs"; referencedColumns: ["id"] },
         ];
       };
+      staff_invites: {
+        Row: {
+          email: string;
+          created_at: string;
+        };
+        Insert: {
+          email: string;
+          created_at?: string;
+        };
+        Update: {
+          email?: string;
+          created_at?: string;
+        };
+        Relationships: [
+
+        ];
+      };
       student_profiles: {
         Row: {
           profile_id: string;

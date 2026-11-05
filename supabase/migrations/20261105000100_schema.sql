@@ -303,6 +303,12 @@ create table public.audit_logs (
 );
 create index audit_logs_created_idx on public.audit_logs (created_at desc);
 
+-- Convites de profissional: só o servidor grava. O gatilho de cadastro consome o convite pelo e-mail.
+create table public.staff_invites (
+  email text primary key check (email = lower(email)),
+  created_at timestamptz not null default now()
+);
+
 -- Limite de uso sem infraestrutura adicional: contador por janela, acessado só pelo servidor.
 create table public.rate_limits (
   key text not null,

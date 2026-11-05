@@ -239,15 +239,19 @@ create trigger subscriptions_touch before update on public.subscriptions
 create trigger workout_plans_touch before update on public.workout_plans
   for each row execute function public.touch_updated_at();
 
--- Cadastro público sempre cria student e exige 18+; só o servidor marca app_metadata.invited.
+-- Cadastro público sempre cria student e exige 18+. Convite vale só se o servidor o registrou antes,
+-- em tabela sem acesso pelo cliente; não depende de metadados enviados no cadastro.
 create function public.handle_new_user() returns trigger
 language plpgsql security definer set search_path = '' as $$
 declare
-  v_invited boolean := coalesce((new.raw_app_meta_data ->> 'invited')::boolean, false);
+  v_invited boolean := false;
   v_birth date;
   v_terms text := new.raw_user_meta_data ->> 'terms_version';
   v_privacy text := new.raw_user_meta_data ->> 'privacy_version';
 begin
+  delete from public.staff_invites where email = lower(new.email);
+  v_invited := found;
+
   begin
     v_birth := (new.raw_user_meta_data ->> 'birth_date')::date;
   exception when others then

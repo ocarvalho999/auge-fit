@@ -10,8 +10,9 @@ test.beforeAll(async () => {
     declare v_user uuid := gen_random_uuid(); v_pro uuid;
     begin
       if not exists (select 1 from public.exercises where name = '${EXERCISE}') then
-        insert into auth.users (id, email, raw_app_meta_data, raw_user_meta_data)
-        values (v_user, 'revisor-' || v_user || '@teste.invalid', '{"invited": true}', '{"full_name": "Revisor E2E"}');
+        insert into public.staff_invites (email) values ('revisor-' || v_user || '@teste.invalid');
+        insert into auth.users (id, email, raw_user_meta_data)
+        values (v_user, 'revisor-' || v_user || '@teste.invalid', '{"full_name": "Revisor E2E"}');
         update public.profiles set role = 'professional' where id = v_user;
         insert into public.professionals (profile_id, cref_number, cref_uf, cref_verified_at, status)
         values (v_user, '000001-G', 'SP', now(), 'active') returning id into v_pro;
@@ -32,6 +33,8 @@ async function onboard(page: import("@playwright/test").Page) {
   await page.getByRole("link", { name: "Continuar" }).click();
   await expect(page.getByText("Passo 3 de 3")).toBeVisible();
   await page.getByRole("button", { name: "Ir para o primeiro treino" }).click();
+  // Espera sair do onboarding: navegar antes disso disputa com o redirecionamento da ação.
+  await expect(page).not.toHaveURL(/onboarding/);
 }
 
 test("cadastro, onboarding, primeiro treino, reenvio sem duplicar, gráfico", async ({ page, context }) => {

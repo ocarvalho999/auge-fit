@@ -90,7 +90,7 @@ describe("cadastro", () => {
     expect(p?.role).toBe("student");
   });
 
-  it("recusa menor de 18 anos e metadado app_metadata não vem do cliente", async () => {
+  it("recusa menor de 18 anos", async () => {
     const birth = new Date(Date.now() - 17 * 365.25 * 864e5).toISOString().slice(0, 10);
     const id = randomUUID();
     expect(
@@ -110,6 +110,21 @@ describe("cadastro", () => {
         `${id}@teste.invalid`,
       ]),
     ).toBe(true);
+  });
+
+  it("metadados do cliente não simulam convite; só o convite registrado pelo servidor dispensa os dados", async () => {
+    const forged = randomUUID();
+    expect(
+      await denied(db, `insert into auth.users (id, email, raw_app_meta_data, raw_user_meta_data) values ($1, $2, '{"invited": true}', '{"invited": true}')`, [forged, `${forged}@teste.invalid`]),
+    ).toBe(true);
+    await asUser(db, alunoA, async () => {
+      expect(await denied(db, `insert into public.staff_invites (email) values ('x@teste.invalid')`)).toBe(true);
+      expect(await rows(db, `select email from public.staff_invites`)).toEqual([]);
+    });
+    const invitedId = await createUser(db, { invited: true });
+    expect(await rows(db, `select email from public.staff_invites where email = $1`, [`${invitedId}@teste.invalid`])).toEqual([]);
+    const [p] = await rows<{ role: string }>(db, `select role from public.profiles where id = $1`, [invitedId]);
+    expect(p?.role).toBe("student");
   });
 
   it("registra o aceite de termos e privacidade com a versão", async () => {
