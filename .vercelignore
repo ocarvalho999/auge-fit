@@ -1,0 +1,12 @@
+# Nada local vai para a Vercel: bancos de teste, logs, senhas da demonstração e builds.
+.tmp/
+.next/
+.next-e2e/
+test-results/
+playwright-report/
+coverage/
+supabase/.temp/
+supabase/.branches/
+.env
+.env.*
+!.env.example
