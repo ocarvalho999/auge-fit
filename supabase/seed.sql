@@ -9,9 +9,9 @@ insert into public.plan_prices (plan_id, interval, amount_cents)
 select p.id, v.interval, v.amount_cents
 from public.plans p
 join (values
-  ('basic', 'month', 3990),
+  ('basic', 'month', 3790),
   ('basic', 'quarter', 9990),
-  ('pro', 'month', 9790),
+  ('pro', 'month', 8790),
   ('pro', 'quarter', 24700),
   ('black', 'package', 69700)
 ) as v (code, interval, amount_cents) on v.code = p.code

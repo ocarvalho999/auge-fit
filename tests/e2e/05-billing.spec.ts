@@ -55,8 +55,8 @@ test("assinatura trimestral: cupom, aguardando confirmação, webhook libera, re
   await expect(page.getByRole("button", { name: /Assinar Pro/ })).toHaveCount(0);
 
   const form = planForm(page, /Assinar Basic: R\$\s*99,90/);
-  await expect(form.getByText(/Economize R\$\s*19,80 no trimestre/)).toBeVisible();
-  await expect(planForm(page, /Assinar Basic: R\$\s*39,90/).getByText(/Economize/)).toHaveCount(0);
+  await expect(form.getByText(/Economize R\$\s*13,80 no trimestre/)).toBeVisible();
+  await expect(planForm(page, /Assinar Basic: R\$\s*37,90/).getByText(/Economize/)).toHaveCount(0);
   await form.getByLabel("Cupom (opcional)").fill("NAOEXISTE");
   await form.getByRole("button").click();
   await expect(form.getByText("Cupom inválido ou expirado.")).toBeVisible();
@@ -121,12 +121,12 @@ test("cancelamento: tão fácil quanto assinar, acesso até o fim do período, r
   await onboarded(page, email);
 
   await page.goto("/assinatura");
-  await planForm(page, /Assinar Basic: R\$\s*39,90/).getByRole("button").click();
+  await planForm(page, /Assinar Basic: R\$\s*37,90/).getByRole("button").click();
   await expect(page).toHaveURL(/assinatura\/retorno/);
   const sub = await latestSubscription(email);
   expect(sub.provider_id).toBeTruthy();
 
-  await providerSays({ id: randomUUID(), status: "approved", transaction_amount: 39.9, external_reference: sub.id });
+  await providerSays({ id: randomUUID(), status: "approved", transaction_amount: 37.9, external_reference: sub.id });
   await page.goto("/assinatura");
   await expect(page.getByText(/Basic · Ativa/)).toBeVisible();
 
