@@ -59,3 +59,28 @@ export async function grantPlan(email: string, code: "basic" | "pro" | "black", 
     [email, code, interval],
   );
 }
+
+const SERVICE = "e2e-service-key";
+
+/** Cria profissional ou admin pela API de administração, como o servidor faria. Só para testes. */
+export async function createStaff(role: "professional" | "admin", password = "senha-de-teste-1") {
+  const email = uniqueEmail(role);
+  const r = await fetch(`${FAKE}/auth/v1/admin/users`, {
+    method: "POST",
+    headers: { authorization: `Bearer ${SERVICE}`, apikey: SERVICE, "content-type": "application/json" },
+    body: JSON.stringify({ email, password, email_confirm: true, app_metadata: { invited: true }, user_metadata: { full_name: `${role} de teste` } }),
+  });
+  if (!r.ok) throw new Error(`Falha ao criar ${role}: ${await r.text()}`);
+  const { id } = (await r.json()) as { id: string };
+  await sql(`update public.profiles set role = $2 where id = $1`, [id, role]);
+  let professionalId: string | null = null;
+  if (role === "professional") {
+    const [p] = await sql<{ id: string }>(
+      `insert into public.professionals (profile_id, cref_number, cref_uf, cref_verified_at, status)
+       values ($1, '000000-G', 'SP', now(), 'active') returning id`,
+      [id],
+    );
+    professionalId = p!.id;
+  }
+  return { email, profileId: id, professionalId };
+}

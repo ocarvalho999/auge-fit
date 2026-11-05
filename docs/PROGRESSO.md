@@ -27,3 +27,10 @@ Só consta aqui o que foi executado e visto passando.
 - E2E em viewport de 375 px passando no Edge: cadastro, onboarding, primeiro treino, queda de conexão, reenvio automático, reenvio repetido do mesmo `client_uuid` sem duplicar, gráfico com linha desenhada, carga anterior na sessão seguinte, arquivo falso recusado pelo conteúdo, exclusão apagando conta, perfil e arquivos.
 - Telas conferidas por captura. A conferência revelou e corrigiu: aviso de conexão piscando online, "Série 3 de 2", navegação inferior apertada, agrupamento por dia em UTC e fila que só reenviava durante o treino.
 - **Não verificado:** e-mail de boas-vindas real (sem Resend, o envio fica como `skipped`); upload e links assinados contra o Storage real do Supabase; PWA instalada em iPhone real.
+
+## Fase 5. Funcionalidades profissionais
+
+- Painel com fila de pendências, alunos vinculados, planejamento individual, programas do catálogo, abertura e análise de check-ins, feedback e revisão de exercícios.
+- E2E passando: planejamento (rascunho oculto, publicado visível com CREF), check-in com feedback de ponta a ponta, acesso a fotos registrado em `audit_logs`, foto carregada de fato no navegador.
+- **Critério da fase:** profissional sem vínculo não acessa nada do aluno, e vínculo encerrado corta o acesso na hora. Comprovado por E2E e pelos testes de RLS: nenhum dado do aluno aparece na resposta HTML.
+- O convite de profissional entra na fase 6, junto do painel do admin, que é quem convida.
