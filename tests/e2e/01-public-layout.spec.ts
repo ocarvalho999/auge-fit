@@ -31,8 +31,8 @@ test("landing mostra preços do banco, garantia e Pro em breve", async ({ page }
   // Economia calculada pelos preços do banco, em verde, só nos planos com trimestre.
   const savings = page.getByText(/^Economize/);
   await expect(savings).toHaveCount(2);
-  await expect(savings.nth(0)).toHaveText(/Economize R\$\s*13,80 no trimestre/);
-  await expect(savings.nth(1)).toHaveText(/Economize R\$\s*16,70 no trimestre/);
+  await expect(savings.nth(0)).toHaveText(/Economize R\$\s*25,80 no trimestre/);
+  await expect(savings.nth(1)).toHaveText(/Economize R\$\s*45,80 no trimestre/);
   await expect(savings.nth(0)).toHaveCSS("color", "rgb(182, 255, 50)");
   // A pergunta frequente não promete treino automático e cita o preço do banco.
   await page.getByText("O app monta meu treino automaticamente?").click();
