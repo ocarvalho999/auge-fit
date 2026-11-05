@@ -71,9 +71,10 @@ test("assinatura trimestral: cupom, aguardando confirmação, webhook libera, re
   await expect(page.getByText("Montar treinos exige um plano ativo.")).toBeVisible();
 
   // O valor enviado ao provedor veio do banco, com o desconto calculado no servidor.
-  const state = (await (await fetch(`${FAKE}/__test/mp/state`)).json()) as { preferences: { external_reference: string; items: { unit_price: number }[]; payment_methods: { excluded_payment_types: { id: string }[] } }[]; refunds: string[] };
+  const state = (await (await fetch(`${FAKE}/__test/mp/state`)).json()) as { preferences: { external_reference: string; items: { unit_price: number; description: string }[]; payment_methods: { excluded_payment_types: { id: string }[] } }[]; refunds: string[] };
   const pref = state.preferences.find((p) => p.external_reference === sub.id);
   expect(pref?.items[0]?.unit_price).toBe(89.91);
+  expect(pref?.items[0]?.description).toBe("Registro de treinos, evolução e biblioteca de exercícios");
   expect(pref?.payment_methods.excluded_payment_types.map((t) => t.id)).toContain("ticket");
 
   const paymentId = randomUUID();

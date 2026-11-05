@@ -95,3 +95,16 @@ export function couponProblem(
 export function webhookEventKey(input: { notificationId?: string | number | null; requestId: string; topic: string; dataId: string }): string {
   return input.notificationId ? `notification:${input.notificationId}` : `request:${input.requestId}:${input.topic}:${input.dataId}`;
 }
+
+const CHECKOUT_DESCRIPTION: Record<string, string> = {
+  basic: "Registro de treinos, evolução e biblioteca de exercícios",
+  pro: "Programas revisados por profissional e app FitBrother para macros",
+  black: "Planejamento individual com profissional, check-ins e app FitBrother",
+};
+
+/** Texto que a pessoa vê na página de pagamento. Descreve só o que o plano entrega, sem promessa de resultado. */
+export function checkoutCopy(code: string, planName: string): { title: string; description: string; reason: string } {
+  const title = `Auge Fit ${planName}`;
+  const description = CHECKOUT_DESCRIPTION[code] ?? title;
+  return { title, description, reason: `${title}: ${description}` };
+}

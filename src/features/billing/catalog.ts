@@ -48,6 +48,7 @@ export const FEATURE_LABELS: { key: string; label: string }[] = [
   { key: "progress", label: "Medidas, fotos e gráficos" },
   { key: "library", label: "Biblioteca de exercícios" },
   { key: "programs", label: "Programas prontos revisados por profissional" },
+  { key: "nutrition_app", label: "App FitBrother: registre refeições por áudio, texto ou foto e acompanhe seus macros" },
   { key: "individual_plan", label: "Planejamento individual" },
   { key: "checkins", label: "Check-in semanal e feedback" },
 ];

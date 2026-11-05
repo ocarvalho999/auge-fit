@@ -1,8 +1,8 @@
 -- Estrutura e catálogo. Nunca usuários falsos. Preços são editáveis pelo admin depois.
 insert into public.plans (code, name, features) values
-  ('basic', 'Basic', '{"log_workouts": true, "progress": true, "library": true, "programs": false, "individual_plan": false, "checkins": false}'),
-  ('pro', 'Pro', '{"log_workouts": true, "progress": true, "library": true, "programs": true, "individual_plan": false, "checkins": false}'),
-  ('black', 'Black', '{"log_workouts": true, "progress": true, "library": true, "programs": true, "individual_plan": true, "checkins": true}')
+  ('basic', 'Basic', '{"log_workouts": true, "progress": true, "library": true, "programs": false, "nutrition_app": false, "individual_plan": false, "checkins": false}'),
+  ('pro', 'Pro', '{"log_workouts": true, "progress": true, "library": true, "programs": true, "nutrition_app": true, "individual_plan": false, "checkins": false}'),
+  ('black', 'Black', '{"log_workouts": true, "progress": true, "library": true, "programs": true, "nutrition_app": true, "individual_plan": true, "checkins": true}')
 on conflict (code) do nothing;
 
 insert into public.plan_prices (plan_id, interval, amount_cents)

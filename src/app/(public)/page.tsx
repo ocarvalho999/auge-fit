@@ -16,6 +16,10 @@ const FAQ = [
     a: "Não. Você monta o seu próprio treino, usa programas revisados por profissional (Pro e Black) ou recebe um planejamento individual de um profissional habilitado (Black).",
   },
   {
+    q: "O que é o app FitBrother, incluído no Pro e no Black?",
+    a: "Um app de nutrição em que você fala, escreve ou fotografa o que comeu e a inteligência artificial estima os macronutrientes. São estimativas para acompanhar sua alimentação no dia a dia: não é prescrição de dieta e não substitui nutricionista ou médico.",
+  },
+  {
     q: "Quem são os profissionais?",
     a: "Profissionais de Educação Física com registro no CREF conferido manualmente antes de entrarem na plataforma.",
   },
