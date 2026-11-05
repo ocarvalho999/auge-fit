@@ -86,4 +86,5 @@ Só consta aqui o que foi executado e visto passando.
 - **Vercel:** projeto `auge-fit`, ligado ao GitHub (cada envio para a `main` publica), em https://auge-fit.vercel.app, com Node 24. Variáveis da homologação cadastradas pela linha de comando, sem exibir valores; as secretas estão marcadas como sensíveis.
 - **Conferido no ar:** páginas públicas respondem; preços e economia do trimestre vêm do banco real; cabeçalhos de segurança e CSP presentes, sem erro no console; rotas protegidas redirecionam; rotina diária e webhook recusam chamadas sem segredo.
 - **RLS no banco real, como visitante:** só planos e preços aparecem; as demais tabelas voltam vazias; alterar preço não muda nada; reservar vaga é recusado.
-- **Não conferido no ar:** cadastro, login, recuperação de senha, upload de fotos e pagamento. Falta configurar as URLs do Supabase Auth e as credenciais do Mercado Pago.
+- **Cadastro real no ar, pelo fundador:** conta criada, e-mail confirmado pelo link, onboarding concluído. Conferido no banco: papel `student`, data de nascimento gravada, aceites de termos e privacidade com versão, e-mail de boas-vindas registrado como `skipped` (sem Resend). As URLs do Supabase Auth foram configuradas pelo fundador e conferidas.
+- **Não conferido no ar:** recuperação de senha, upload de fotos, exclusão de conta e pagamento (sem credenciais do Mercado Pago).
