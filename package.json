@@ -16,7 +16,8 @@
     "test:db": "vitest run --project db",
     "test:e2e": "playwright test",
     "secrets:scan": "node scripts/scan-secrets.mjs",
-    "check": "npm run typecheck && npm run lint && npm run test && npm run build"
+    "check": "npm run typecheck && npm run lint && npm run test && npm run build",
+    "db:types": "tsx scripts/gen-db-types.ts"
   },
   "dependencies": {
     "@sentry/nextjs": "^11.11.0",

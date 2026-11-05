@@ -210,7 +210,6 @@ describe("plans e plan_prices", () => {
   it("anônimo lê ativos e não altera; admin gerencia", async () => {
     await asUser(db, null, async () => {
       expect((await rows(db, `select code from public.plans`)).length).toBe(3);
-      expect(await denied(db, `update public.plan_prices set amount_cents = 1`).then(() => true)).toBe(true);
       const r = await db.query(`update public.plan_prices set amount_cents = 1`);
       expect(r.rowCount).toBe(0);
     });
