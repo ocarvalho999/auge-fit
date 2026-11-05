@@ -5,7 +5,8 @@ import { requireRole } from "@/features/auth/session";
 import { cancelSubscriptionAction, requestRefundAction, startCheckoutAction } from "@/features/billing/actions";
 import { FEATURE_LABELS, getCatalog } from "@/features/billing/catalog";
 import { isWithinGuarantee } from "@/features/billing/domain";
-import { getCurrentSubscription } from "@/features/billing/entitlements";
+import { getCurrentSubscription, hasEntitlement } from "@/features/billing/entitlements";
+import { saveWhatsappAction } from "@/features/fitbrother/actions";
 import { formatCents, formatDate, INTERVAL_LABEL } from "@/lib/format";
 import { createClient } from "@/lib/supabase/server";
 
@@ -31,6 +32,10 @@ export default async function SubscriptionPage({ searchParams }: { searchParams:
   const profile = await requireRole("student");
   const { black } = await searchParams;
   const supabase = await createClient();
+  const [hasNutrition, { data: nutrition }] = await Promise.all([
+    hasEntitlement(profile.id, "nutrition_app"),
+    supabase.from("nutrition_access").select("whatsapp, granted_at, revoked_at").eq("profile_id", profile.id).maybeSingle(),
+  ]);
   const [subscription, catalog, { data: payments }] = await Promise.all([
     getCurrentSubscription(profile.id),
     getCatalog(),
@@ -78,6 +83,27 @@ export default async function SubscriptionPage({ searchParams }: { searchParams:
             <EmptyState title="Você ainda não tem um plano ativo" />
           )}
         </Card>
+
+        {hasNutrition ? (
+          <Card>
+            <h2 className="mb-1 font-bold">App FitBrother</h2>
+            {nutrition?.granted_at && !nutrition.revoked_at ? (
+              <p className="text-sm text-muted">Acesso liberado em {formatDate(nutrition.granted_at)}. As instruções foram enviadas pelo WhatsApp.</p>
+            ) : (
+              <>
+                <p className="mb-3 text-sm text-muted">
+                  {nutrition?.whatsapp
+                    ? "Você receberá o acesso pelo WhatsApp neste número. Se estiver errado, corrija abaixo."
+                    : "Seu plano inclui o app. Informe seu número para receber o acesso. Usamos esse número só para isso."}
+                </p>
+                <ActionForm action={saveWhatsappAction}>
+                  <Field name="whatsapp" label="Seu WhatsApp com DDD" type="tel" inputMode="tel" autoComplete="tel" defaultValue={nutrition?.whatsapp?.slice(2) ?? ""} />
+                  <SubmitButton variant="secondary">Salvar número</SubmitButton>
+                </ActionForm>
+              </>
+            )}
+          </Card>
+        ) : null}
 
         <Card>
           <h2 className="mb-1 font-bold">{subscription ? "Trocar ou renovar plano" : "Escolha um plano"}</h2>

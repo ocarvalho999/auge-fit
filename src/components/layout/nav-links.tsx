@@ -31,9 +31,9 @@ export function NavLinks({ items, layout }: { items: NavItem[]; layout: "top" | 
     );
   }
   return (
-    <ul className="flex">
+    <ul className={`flex ${items.length > 6 ? "overflow-x-auto" : ""}`}>
       {items.map((item) => (
-        <li key={item.href} className="min-w-0 flex-1">
+        <li key={item.href} className={items.length > 6 ? "min-w-18 flex-1" : "min-w-0 flex-1"}>
           <Link
             href={item.href}
             aria-current={active === item.href ? "page" : undefined}

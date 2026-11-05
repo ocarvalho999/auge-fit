@@ -82,7 +82,9 @@ Decisão do fundador em 2026-11-05. O que isso implica:
 Pedido do fundador em 2026-11-05: incluir no plano médio um app que mede macros e monta dieta personalizada. Fonte lida: https://fitbrother-blog.vercel.app/blog/ .
 
 - **Relação entre as empresas:** o FitBrother é empresa parceira, da qual o fundador é sócio. Falta formalizar por escrito preço por assinante, uso da marca e responsabilidade pelos dados.
-- **BLOQUEIO, entrega do acesso:** o Auge Fit anuncia o benefício, mas não libera nada no app. Falta definir como liberar e encerrar o acesso. Sem isso, vender o Pro seria prometer o que o sistema não entrega.
+- **Entrega do acesso, decisão do fundador:** manual, pelo WhatsApp. O assinante informa o número em Assinatura, e `/admin/fitbrother` mostra quem liberar e quem remover. O sistema só registra: quem libera e remove no FitBrother é uma pessoa, e sem essa rotina diária alguém pode pagar e ficar sem acesso, ou cancelar e continuar com ele.
+- **Prazo de liberação:** a tela não promete prazo, porque nenhum foi definido. Definir antes de vender, com atendimento nos fins de semana.
+- **Número guardado:** fica em tabela própria (`nutrition_access`), fora do alcance do profissional. Se a conta for excluída com acesso ativo, o número fica até a remoção manual e depois é apagado. Confirmar na revisão jurídica.
 - **"Dieta personalizada" fora do texto:** o blog não diz que o app gera plano alimentar. Fala em "Estimativa geral, não prescrição" e que não substitui nutricionista. Além disso, a especificação proíbe prescrição automatizada, e dieta individual é atividade de nutricionista (confirmar na revisão jurídica). O texto só volta a falar em dieta com o responsável técnico e a confirmação do que o app faz.
 - **"Mede a evolução" fora do texto:** o blog cita painel diário, ofensiva e ranking, sem histórico de evolução. A evolução anunciada é a do próprio Auge Fit, com medidas e gráficos.
 - **Premissa:** incluído também no Black, que traz todos os recursos dos planos abaixo; sem isso, o plano mais caro apareceria com um benefício riscado. Para tirar, é só mudar `nutrition_app` no Black.

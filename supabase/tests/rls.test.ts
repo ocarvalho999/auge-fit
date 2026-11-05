@@ -673,6 +673,45 @@ describe("checkins e feedbacks", () => {
   });
 });
 
+describe("nutrition_access", () => {
+  it("cada um lê só o próprio; cliente nunca escreve; admin lê; profissional não vê o telefone", async () => {
+    const dono = await createUser(db);
+    const outro = await createUser(db);
+    await db.query(`insert into public.nutrition_access (profile_id, whatsapp) values ($1, '5511912345678')`, [dono]);
+    await asUser(db, dono, async () => {
+      expect(await rows(db, `select id from public.nutrition_access`)).toHaveLength(1);
+      const u = await db.query(`update public.nutrition_access set granted_at = now()`);
+      expect(u.rowCount).toBe(0);
+      expect(await denied(db, `insert into public.nutrition_access (profile_id, whatsapp) values ($1, '5511912345670')`, [outro])).toBe(true);
+    });
+    await asUser(db, outro, async () => {
+      expect(await rows(db, `select id from public.nutrition_access`)).toEqual([]);
+    });
+    await link(db, pro.professionalId, dono);
+    await asUser(db, pro.profileId, async () => {
+      expect(await rows(db, `select id from public.nutrition_access`)).toEqual([]);
+    });
+    await asUser(db, admin, async () => {
+      expect((await rows(db, `select id from public.nutrition_access`)).length).toBeGreaterThan(0);
+      const u = await db.query(`update public.nutrition_access set granted_at = now()`);
+      expect(u.rowCount).toBe(0);
+    });
+  });
+
+  it("recusa número fora do formato", async () => {
+    const dono = await createUser(db);
+    expect(await denied(db, `insert into public.nutrition_access (profile_id, whatsapp) values ($1, '123')`, [dono])).toBe(true);
+  });
+
+  it("excluir a conta mantém o registro sem vínculo", async () => {
+    const dono = await createUser(db);
+    const [row] = await rows<{ id: string }>(db, `insert into public.nutrition_access (profile_id, whatsapp, granted_at) values ($1, '5511912345678', now()) returning id`, [dono]);
+    await db.query(`delete from auth.users where id = $1`, [dono]);
+    const [after] = await rows<{ profile_id: string | null }>(db, `select profile_id from public.nutrition_access where id = $1`, [row!.id]);
+    expect(after?.profile_id).toBeNull();
+  });
+});
+
 describe("tabelas exclusivas do servidor", () => {
   it("webhook_events, audit_logs, waitlist e rate_limits: cliente não escreve; só admin lê", async () => {
     await db.query(`insert into public.webhook_events (provider_event_key, payload) values ($1, '{}')`, [randomUUID()]);

@@ -17,7 +17,7 @@ const FAQ = [
   },
   {
     q: "O que é o app FitBrother, incluído no Pro e no Black?",
-    a: "Um app de nutrição em que você fala, escreve ou fotografa o que comeu e a inteligência artificial estima os macronutrientes. São estimativas para acompanhar sua alimentação no dia a dia: não é prescrição de dieta e não substitui nutricionista ou médico.",
+    a: "Um app de nutrição em que você fala, escreve ou fotografa o que comeu e a inteligência artificial estima os macronutrientes. São estimativas para acompanhar sua alimentação no dia a dia: não é prescrição de dieta e não substitui nutricionista ou médico. Depois da confirmação do pagamento, você informa seu WhatsApp e recebe o acesso por lá.",
   },
   {
     q: "Quem são os profissionais?",
