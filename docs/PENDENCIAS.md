@@ -48,7 +48,7 @@ Decisões não críticas adotadas sem consulta (a opção mais simples e segura)
 
 ## Ambiente de testes
 
-- **Instabilidade em aberto:** em 2 de cerca de 10 execuções do E2E, o `next start` de teste parou de responder no meio da suíte, sem erro no log. Depois disso, 3 execuções seguidas passaram (incluindo a suíte completa). A causa não foi encontrada. `tests/e2e/support/stack.ts` agora grava saída de processos em `.tmp/stack.log` para a próxima ocorrência. Não há indício de relação com o código do app, mas isso não está provado.
+- **Instabilidade em aberto:** em 2 de cerca de 10 execuções do E2E, o `next start` de teste parou de responder no meio da suíte, sem erro no log. Depois disso, 3 execuções seguidas passaram (incluindo a suíte completa). A causa não foi encontrada. `tests/e2e/support/stack.ts` agora grava saída de processos em `.tmp/stack.log` para a próxima ocorrência. Não há indício de relação com o código do app, mas isso não está provado. Em 2026-11-05, uma execução lenta coincidiu com pouca memória livre (cerca de 1,1 GB) e CPU em 76%, o que pode explicar as quedas; também não está provado. O E2E passou no CI.
 
 ## Pagamentos
 
