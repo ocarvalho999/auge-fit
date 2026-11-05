@@ -54,8 +54,8 @@ test("assinatura trimestral: cupom, aguardando confirmação, webhook libera, re
   // Pro não pode ser vendido antes de 3 programas publicados.
   await expect(page.getByRole("button", { name: /Assinar Pro/ })).toHaveCount(0);
 
-  const form = planForm(page, /Assinar Basic: R\$\s*99,90/);
-  await expect(form.getByText(/Economize R\$\s*13,80 no trimestre/)).toBeVisible();
+  const form = planForm(page, /Assinar Basic: R\$\s*87,90/);
+  await expect(form.getByText(/Economize R\$\s*25,80 no trimestre/)).toBeVisible();
   await expect(planForm(page, /Assinar Basic: R\$\s*37,90/).getByText(/Economize/)).toHaveCount(0);
   await form.getByLabel("Cupom (opcional)").fill("NAOEXISTE");
   await form.getByRole("button").click();
@@ -68,25 +68,25 @@ test("assinatura trimestral: cupom, aguardando confirmação, webhook libera, re
   await expect(page.getByRole("heading", { name: "Aguardando confirmação" })).toBeVisible();
   const sub = await latestSubscription(email);
   expect(sub.status).toBe("pending");
-  expect(sub.expected_amount_cents).toBe(8991);
+  expect(sub.expected_amount_cents).toBe(7911);
   await page.goto("/treinos/novo");
   await expect(page.getByText("Montar treinos exige um plano ativo.")).toBeVisible();
 
   // O valor enviado ao provedor veio do banco, com o desconto calculado no servidor.
   const state = (await (await fetch(`${FAKE}/__test/mp/state`)).json()) as { preferences: { external_reference: string; items: { unit_price: number; description: string }[]; payment_methods: { excluded_payment_types: { id: string }[] } }[]; refunds: string[] };
   const pref = state.preferences.find((p) => p.external_reference === sub.id);
-  expect(pref?.items[0]?.unit_price).toBe(89.91);
+  expect(pref?.items[0]?.unit_price).toBe(79.11);
   expect(pref?.items[0]?.description).toBe("Registro de treinos, evolução e biblioteca de exercícios");
   expect(pref?.payment_methods.excluded_payment_types.map((t) => t.id)).toContain("ticket");
 
   const paymentId = randomUUID();
-  await providerSays({ id: paymentId, status: "approved", transaction_amount: 89.91, external_reference: sub.id });
+  await providerSays({ id: paymentId, status: "approved", transaction_amount: 79.11, external_reference: sub.id });
   await page.goto("/treinos/novo");
   await expect(page.getByLabel("Nome do treino")).toBeVisible();
 
   await page.goto("/assinatura");
   await expect(page.getByText(/Basic · Ativa/)).toBeVisible();
-  await expect(page.getByText(/R\$\s*89,91 · Aprovado/)).toBeVisible();
+  await expect(page.getByText(/R\$\s*79,11 · Aprovado/)).toBeVisible();
   const [redeemed] = await sql<{ n: string }>(`select count(*) as n from public.coupon_redemptions r join public.coupons c on c.id = r.coupon_id where c.code = $1`, [code]);
   expect(Number(redeemed?.n)).toBe(1);
 
@@ -107,7 +107,7 @@ test("assinatura trimestral: cupom, aguardando confirmação, webhook libera, re
 
   await page.goto("/treinos/novo");
   await expect(page.getByLabel("Nome do treino")).toBeVisible();
-  await providerSays({ id: paymentId, status: "refunded", transaction_amount: 89.91, external_reference: sub.id });
+  await providerSays({ id: paymentId, status: "refunded", transaction_amount: 79.11, external_reference: sub.id });
   await page.goto("/treinos/novo");
   await expect(page.getByText("Montar treinos exige um plano ativo.")).toBeVisible();
   await adminCtx.close();
