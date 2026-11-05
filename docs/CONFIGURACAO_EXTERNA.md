@@ -32,7 +32,7 @@ Nenhuma conta foi criada no desenvolvimento, e nenhuma credencial real foi usada
 
 | Serviço | Para quê | O que fazer |
 |---|---|---|
-| GitHub | Código e CI | Criar repositório **privado** e enviar o código |
+| GitHub | Código e CI | Feito: `ocarvalho999/auge-fit`, público por decisão do fundador |
 | Vercel Pro | Hospedagem e rotina diária | Importar o repositório e cadastrar as variáveis |
 | Supabase Pro | Banco, login e fotos | Um projeto de homologação e um de produção, na região de São Paulo |
 | Mercado Pago | Pagamentos | Criar a aplicação; credenciais de teste e de produção |

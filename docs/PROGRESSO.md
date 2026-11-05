@@ -75,7 +75,7 @@ Só consta aqui o que foi executado e visto passando.
 
 ### Publicação no GitHub
 
-- Código enviado ao repositório privado `ocarvalho999/auge-fit`, branch `main`. As branches `fase/*` ficaram só na máquina local; o conteúdo delas está todo na `main`.
+- Código enviado ao repositório `ocarvalho999/auge-fit`, branch `main`. Criado como privado; o fundador optou por deixá-lo público. As branches `fase/*` ficaram só na máquina local; o conteúdo delas está todo na `main`.
 - CI verde na primeira execução no GitHub, nos jobs `check` e `e2e`. Foi a primeira vez que a suíte rodou no Linux, com Chromium.
 - O primeiro envio foi recusado com `fatal error in commit_refs_rules`. Um envio sem arquivo de workflow passou e o mesmo envio com workflow foi recusado. Depois da autorização do fundador, o envio passou pelo Gerenciador de Credenciais do Windows. O token do `gh` continua sem o escopo `workflow`, e o motivo exato da mudança não foi confirmado.
 - Vercel, Supabase, Mercado Pago, Resend e domínio seguem pendentes: dependem das contas do fundador.

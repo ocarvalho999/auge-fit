@@ -66,3 +66,13 @@ Decisões não críticas adotadas sem consulta (a opção mais simples e segura)
 - **Mapas de código no Sentry:** o envio de source maps não foi configurado, para não exigir mais um segredo no build. Os erros chegam com o código minificado.
 - **`style-src 'unsafe-inline'`:** necessário para os gráficos. Scripts seguem só com nonce.
 - **Limite de uso depende do banco:** se o contador falhar, a ação limitada é negada. Em queda do banco, o login já não funcionaria de qualquer forma.
+
+## Repositório público
+
+Decisão do fundador em 2026-11-05. O que isso implica:
+
+- **Segredos:** qualquer credencial enviada fica exposta na hora e deve ser trocada, mesmo que o commit seja apagado depois. A varredura roda antes de cada commit e no CI, mas só reconhece formatos conhecidos.
+- **E-mail do autor:** o e-mail pessoal aparece nos commits já enviados. Para os próximos, dá para usar o endereço `noreply` do GitHub.
+- **Logs do GitHub Actions:** são públicos. Não imprimir dados reais nos testes.
+- **Documentos internos:** `docs/` fica visível, incluindo pendências de segurança e de pagamento, como a validação ainda não feita no sandbox do Mercado Pago.
+- **Licença:** sem arquivo de licença, ninguém recebe permissão de uso do código, mesmo com ele visível. Avaliar na revisão jurídica.
