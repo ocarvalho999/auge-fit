@@ -21,3 +21,9 @@ Decisões não críticas adotadas sem consulta (a opção mais simples e segura)
 - **Cupom em assinatura mensal:** o desconto vale para todas as cobranças da assinatura.
 - **Revisão de exercício:** o profissional ativo enxerga exercícios não publicados para poder revisá-los. Se o admin editar as instruções, a revisão cai e o exercício sai de publicação.
 - **Medidas e fotos exigem assinatura vigente para novos registros**, além do consentimento. A especificação só cita treinos; como não há plano gratuito, a regra foi estendida. Leitura e exportação continuam liberadas.
+
+## Conteúdo e landing
+
+- **"App real em uso" na landing:** a especificação pede o app real em uso, sem nada inventado. Falta o fundador gravar a tela com conta real. A seção "Como é usar" descreve os passos em texto até lá.
+- **Lista de espera ativável:** ligada por `WAITLIST_ENABLED=true`. Com ela ligada, a landing troca os botões de compra pelo formulário.
+- **Fonte:** pilha de fontes do sistema, sem baixar fonte externa, para simplificar a CSP.

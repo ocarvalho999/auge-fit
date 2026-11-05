@@ -91,7 +91,9 @@ ${rel.join("\n")}
       const inner = f.table_out.slice(6, -1);
       ret = `{ ${parseArgs(inner).join("; ")} }[]`;
     }
-    out += `      ${f.name}: { Args: { ${parseArgs(f.args).join("; ")} }; Returns: ${ret} };\n`;
+    const fnArgs = parseArgs(f.args);
+    const argsType = fnArgs.length ? `{ ${fnArgs.join("; ")} }` : "Record<PropertyKey, never>";
+    out += `      ${f.name}: { Args: ${argsType}; Returns: ${ret} };\n`;
   }
   out += `    };
     Enums: { [_ in never]: never };
