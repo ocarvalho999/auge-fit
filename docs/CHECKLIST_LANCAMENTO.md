@@ -27,7 +27,7 @@ Situação em 2026-11-05: **o app não foi publicado.** Os itens marcados foram 
 
 ## Publicação
 
-- [ ] Repositório privado no GitHub e CI verde (o job de E2E no Linux nunca rodou)
+- [ ] Código enviado ao repositório privado `ocarvalho999/auge-fit` (criado; falta liberar o escopo `workflow` do token) e CI verde (o job de E2E no Linux nunca rodou)
 - [ ] Projeto de homologação no Supabase: `supabase link` e `supabase db push`
 - [ ] Projeto na Vercel com as variáveis de homologação, conferir o build
 - [ ] Repetir todos os bloqueios em homologação
