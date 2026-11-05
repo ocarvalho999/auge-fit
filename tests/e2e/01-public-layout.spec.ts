@@ -32,11 +32,11 @@ test("landing mostra preços do banco, garantia e Pro em breve", async ({ page }
   const savings = page.getByText(/^Economize/);
   await expect(savings).toHaveCount(2);
   await expect(savings.nth(0)).toHaveText(/Economize R\$\s*19,80 no trimestre/);
-  await expect(savings.nth(1)).toHaveText(/Economize R\$\s*44,00 no trimestre/);
+  await expect(savings.nth(1)).toHaveText(/Economize R\$\s*46,70 no trimestre/);
   await expect(savings.nth(0)).toHaveCSS("color", "rgb(182, 255, 50)");
   // A pergunta frequente não promete treino automático e cita o preço do banco.
   await page.getByText("O app monta meu treino automaticamente?").click();
-  await expect(page.getByText(/O app não gera treino sozinho.*plano Pro \(R\$\s*97,00 por mês\)/)).toBeVisible();
+  await expect(page.getByText(/O app não gera treino sozinho.*plano Pro \(R\$\s*97,90 por mês\)/)).toBeVisible();
   // FitBrother no Pro e no Black, riscado só no Basic.
   const fitbrother = page.getByText(/^App FitBrother:/);
   await expect(fitbrother).toHaveCount(3);
