@@ -31,13 +31,13 @@ export function NavLinks({ items, layout }: { items: NavItem[]; layout: "top" | 
     );
   }
   return (
-    <ul className="flex overflow-x-auto">
+    <ul className="flex">
       {items.map((item) => (
-        <li key={item.href} className="min-w-16 flex-1">
+        <li key={item.href} className="min-w-0 flex-1">
           <Link
             href={item.href}
             aria-current={active === item.href ? "page" : undefined}
-            className={`flex min-h-14 items-center justify-center px-1 text-center text-xs font-medium ${
+            className={`flex min-h-14 items-center justify-center px-0.5 text-center text-[11px] font-medium ${
               active === item.href ? "text-accent" : "text-muted"
             }`}
           >
