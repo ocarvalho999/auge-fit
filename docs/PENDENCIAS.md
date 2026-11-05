@@ -27,3 +27,10 @@ Decisões não críticas adotadas sem consulta (a opção mais simples e segura)
 - **"App real em uso" na landing:** a especificação pede o app real em uso, sem nada inventado. Falta o fundador gravar a tela com conta real. A seção "Como é usar" descreve os passos em texto até lá.
 - **Lista de espera ativável:** ligada por `WAITLIST_ENABLED=true`. Com ela ligada, a landing troca os botões de compra pelo formulário.
 - **Fonte:** pilha de fontes do sistema, sem baixar fonte externa, para simplificar a CSP.
+
+## Aluno
+
+- **BLOQUEIO DE LANÇAMENTO, biblioteca vazia:** como exercício só é publicado depois de revisão, sem revisão de um profissional o aluno não consegue montar treino nenhum. É preciso ter a biblioteca mínima revisada antes de abrir vendas.
+- **Limite de 10 MB x Vercel:** a Vercel limita o corpo da requisição a cerca de 4,5 MB. O app reduz a foto no aparelho antes de enviar quando ela passa de 4 MB; o limite de 10 MB continua valendo para o arquivo escolhido. Sem JavaScript, fotos acima do limite da Vercel falham.
+- **Treino do dia:** rodízio simples entre os treinos do plano mais recente, com prioridade para o planejamento prescrito. Programas do catálogo são iniciados pela tela de Treinos.
+- **Plano escolhido na landing:** `/cadastro?plano=` ainda não pré-seleciona o plano; a escolha acontece em Assinatura depois do onboarding.

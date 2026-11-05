@@ -174,7 +174,8 @@ export async function startFakeSupabase(databaseUrl: string, port: number, appOr
         conds.push(`${neg}(${col}::text = any($${values.length}::text[]))`);
       } else if (OPS[op]) {
         values.push(arg.replace(/\*/g, "%"));
-        conds.push(`${neg}(${col}::text ${["eq", "neq", "ilike", "like"].includes(op) ? OPS[op] : ""} ${["eq", "neq", "ilike", "like"].includes(op) ? `$${values.length}` : ""})`.replace(/\(.*\s{2}\)/, `(${col} ${OPS[op]} $${values.length})`));
+        const textOp = ["eq", "neq", "ilike", "like"].includes(op);
+        conds.push(`${neg}(${col}${textOp ? "::text" : ""} ${OPS[op]} $${values.length})`);
       } else {
         throw Object.assign(new Error(`operador não suportado: ${op}`), { code: "PGRST100" });
       }

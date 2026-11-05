@@ -21,6 +21,7 @@ for (const viewport of [
 
 test("landing mostra preços do banco, garantia e Pro em breve", async ({ page }) => {
   await page.goto("/");
+  await page.screenshot({ path: ".tmp/shots/landing.png", fullPage: true });
   await expect(page.getByText("R$ 39,90")).toBeVisible();
   await expect(page.getByText("R$ 697,00")).toBeVisible();
   await expect(page.getByRole("heading", { name: "Garantia de 7 dias" })).toBeVisible();

@@ -1,5 +1,6 @@
 // Postgres real (binário do pacote embedded-postgres) para testes, sem Docker.
 // As tabelas de auth e storage abaixo são um esboço mínimo das do Supabase, não as originais.
+import { spawnSync } from "node:child_process";
 import { existsSync, mkdirSync, readFileSync, readdirSync, rmSync } from "node:fs";
 import path from "node:path";
 import EmbeddedPostgres from "embedded-postgres";
@@ -55,15 +56,33 @@ export function migrationFiles(root = process.cwd()): string[] {
     .map((f) => path.join(dir, f));
 }
 
+/** Uma execução interrompida pode deixar o Postgres de teste no ar. Só atua na pasta de dados deste teste. */
+function stopLeftover(dir: string) {
+  if (!existsSync(path.join(dir, "postmaster.pid"))) return;
+  const platform = process.platform === "win32" ? "windows" : process.platform;
+  const bin = path.join(process.cwd(), "node_modules", "@embedded-postgres", `${platform}-${process.arch}`, "native", "bin", process.platform === "win32" ? "pg_ctl.exe" : "pg_ctl");
+  spawnSync(bin, ["stop", "-D", dir, "-m", "immediate", "-w"], { stdio: "ignore" });
+}
+
 export interface TestPostgres {
   url: string;
   stop: () => Promise<void>;
 }
 
 export async function startPostgres(name: string, port: number): Promise<TestPostgres> {
-  const dir = path.join(process.cwd(), ".tmp", name);
-  if (existsSync(dir)) rmSync(dir, { recursive: true, force: true });
-  mkdirSync(path.dirname(dir), { recursive: true });
+  const base = path.join(process.cwd(), ".tmp");
+  mkdirSync(base, { recursive: true });
+  // Pasta única por execução: no Windows, um processo órfão prende a memória ligada ao caminho antigo.
+  for (const old of readdirSync(base).filter((d) => d === name || d.startsWith(`${name}-`))) {
+    const oldDir = path.join(base, old);
+    stopLeftover(oldDir);
+    try {
+      rmSync(oldDir, { recursive: true, force: true });
+    } catch {
+      // Ainda em uso; a próxima execução tenta de novo.
+    }
+  }
+  const dir = path.join(base, `${name}-${Date.now()}`);
 
   const pg = new EmbeddedPostgres({
     databaseDir: dir,
@@ -71,6 +90,7 @@ export async function startPostgres(name: string, port: number): Promise<TestPos
     password: "postgres",
     port,
     persistent: true,
+    postgresFlags: ["-c", "io_method=sync"],
     onLog: () => {},
     onError: () => {},
   });
