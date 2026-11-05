@@ -17,7 +17,8 @@
     "test:e2e": "playwright test",
     "secrets:scan": "node scripts/scan-secrets.mjs",
     "check": "npm run typecheck && npm run lint && npm run test && npm run build",
-    "db:types": "tsx scripts/gen-db-types.ts"
+    "db:types": "tsx scripts/gen-db-types.ts",
+    "prepare": "node scripts/setup-hooks.mjs"
   },
   "dependencies": {
     "@sentry/nextjs": "^11.11.0",

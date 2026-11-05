@@ -1,0 +1,3 @@
+#!/bin/sh
+# Varredura de segredos antes de cada commit.
+node scripts/scan-secrets.mjs

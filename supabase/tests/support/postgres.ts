@@ -2,6 +2,7 @@
 // As tabelas de auth e storage abaixo são um esboço mínimo das do Supabase, não as originais.
 import { spawnSync } from "node:child_process";
 import { existsSync, mkdirSync, readFileSync, readdirSync, rmSync } from "node:fs";
+import { connect } from "node:net";
 import path from "node:path";
 import EmbeddedPostgres from "embedded-postgres";
 import { Client } from "pg";
@@ -61,7 +62,49 @@ function stopLeftover(dir: string) {
   if (!existsSync(path.join(dir, "postmaster.pid"))) return;
   const platform = process.platform === "win32" ? "windows" : process.platform;
   const bin = path.join(process.cwd(), "node_modules", "@embedded-postgres", `${platform}-${process.arch}`, "native", "bin", process.platform === "win32" ? "pg_ctl.exe" : "pg_ctl");
-  spawnSync(bin, ["stop", "-D", dir, "-m", "immediate", "-w"], { stdio: "ignore" });
+  const pidFile = path.join(dir, "postmaster.pid");
+  const pid = Number(readFileSync(pidFile, "utf8").split("\n")[0]);
+  spawnSync(bin, ["stop", "-D", dir, "-m", "immediate", "-w", "-t", "10"], { stdio: "ignore" });
+  // Se o pg_ctl não bastou, encerra pelo PID desta pasta de dados: apagar a pasta antes deixaria um órfão na porta.
+  if (existsSync(pidFile) && pid > 0) {
+    try {
+      process.kill(pid);
+    } catch {
+      // Já tinha terminado.
+    }
+  }
+}
+
+/**
+ * No Windows, encerrar a árvore de processos pode deixar um filho do Postgres vivo, segurando a porta.
+ * Só atua em processos do binário deste projeto cujo pai já não existe; um banco de teste em uso fica intacto.
+ */
+function stopOrphans() {
+  if (process.platform !== "win32") return;
+  const binary = path.join(process.cwd(), "node_modules", "@embedded-postgres").replaceAll("\\", "/");
+  const script = [
+    `$all = Get-CimInstance Win32_Process -Filter "Name='postgres.exe'" | Where-Object { $_.CommandLine -and $_.CommandLine.Replace('\\','/').ToLower().Contains('${binary.toLowerCase()}') }`,
+    "foreach ($p in $all) { if (-not (Get-Process -Id $p.ParentProcessId -ErrorAction SilentlyContinue)) { Stop-Process -Id $p.ProcessId -Force -ErrorAction SilentlyContinue } }",
+  ].join("; ");
+  spawnSync("powershell", ["-NoProfile", "-NonInteractive", "-Command", script], { stdio: "ignore" });
+}
+
+/** No Windows, o Postgres anterior pode levar alguns segundos para soltar a porta. */
+async function waitForPortFree(port: number, timeoutMs = 20_000) {
+  const deadline = Date.now() + timeoutMs;
+  while (Date.now() < deadline) {
+    const busy = await new Promise<boolean>((resolve) => {
+      const socket = connect({ port, host: "127.0.0.1" });
+      socket.once("connect", () => {
+        socket.destroy();
+        resolve(true);
+      });
+      socket.once("error", () => resolve(false));
+    });
+    if (!busy) return;
+    await new Promise((resolve) => setTimeout(resolve, 500));
+  }
+  throw new Error(`Porta ${port} continua ocupada`);
 }
 
 export interface TestPostgres {
@@ -82,6 +125,8 @@ export async function startPostgres(name: string, port: number): Promise<TestPos
       // Ainda em uso; a próxima execução tenta de novo.
     }
   }
+  stopOrphans();
+  await waitForPortFree(port);
   const dir = path.join(base, `${name}-${Date.now()}`);
 
   const pg = new EmbeddedPostgres({

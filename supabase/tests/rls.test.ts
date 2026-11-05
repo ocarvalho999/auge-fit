@@ -528,6 +528,15 @@ describe("registros, medidas e fotos", () => {
     });
   });
 
+  it("conta suspensa perde o direito de registrar no banco", async () => {
+    const suspensa = await createUser(db);
+    await subscribe(db, suspensa, "basic", "month");
+    await db.query(`update public.profiles set status = 'suspended' where id = $1`, [suspensa]);
+    await asUser(db, suspensa, async () => {
+      expect(await denied(db, `insert into public.workout_logs (student_id) values ($1)`, [suspensa])).toBe(true);
+    });
+  });
+
   it("sem assinatura não cria treino", async () => {
     const semPlano = await createUser(db);
     await asUser(db, semPlano, async () => {

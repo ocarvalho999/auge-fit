@@ -59,3 +59,10 @@ Decisões não críticas adotadas sem consulta (a opção mais simples e segura)
 - **Pagamento depois da reserva expirar:** o acesso é honrado e a vaga volta a contar, podendo exceder a capacidade. O admin resolve no vínculo ou reembolsa.
 - **Assinatura pendente abandonada:** o registro fica como `pending`, sem efeito, para um pagamento tardio ainda ser reconhecido.
 - **E-mail de inatividade:** só para quem aceitou marketing, por precaução. Confirmar na revisão jurídica se pode ser transacional.
+
+## Segurança
+
+- **Dependências de desenvolvimento:** 8 alertas moderados de `minimatch`, vindos das ferramentas de lint. Corrigir exige mudar de versão maior do ESLint. Reavaliar na próxima atualização.
+- **Mapas de código no Sentry:** o envio de source maps não foi configurado, para não exigir mais um segredo no build. Os erros chegam com o código minificado.
+- **`style-src 'unsafe-inline'`:** necessário para os gráficos. Scripts seguem só com nonce.
+- **Limite de uso depende do banco:** se o contador falhar, a ação limitada é negada. Em queda do banco, o login já não funcionaria de qualquer forma.
