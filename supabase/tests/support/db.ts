@@ -46,12 +46,12 @@ export async function denied(db: Db, sql: string, params: unknown[] = []): Promi
 
 export async function createUser(db: Db, overrides: { invited?: boolean; birthDate?: string; name?: string } = {}) {
   const id = randomUUID();
+  if (overrides.invited) await db.query(`insert into public.staff_invites (email) values ($1)`, [`${id}@teste.invalid`]);
   await db.query(
-    `insert into auth.users (id, email, raw_app_meta_data, raw_user_meta_data) values ($1, $2, $3, $4)`,
+    `insert into auth.users (id, email, raw_user_meta_data) values ($1, $2, $3)`,
     [
       id,
       `${id}@teste.invalid`,
-      JSON.stringify(overrides.invited ? { invited: true } : {}),
       JSON.stringify(
         overrides.invited
           ? { full_name: overrides.name ?? "Convidado" }

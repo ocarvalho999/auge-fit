@@ -39,3 +39,13 @@ Decisões não críticas adotadas sem consulta (a opção mais simples e segura)
 
 - **Página inexistente com status 200:** com `loading.tsx`, o Next começa a responder antes do `notFound()`, então a rota de aluno sem vínculo devolve status 200 com a tela "Página não encontrada". Nenhum dado do aluno sai na resposta (testado). A consequência é só o código HTTP.
 - **Check-in semanal:** abre manualmente pelo profissional; a abertura automática entra com as rotinas agendadas da fase 7.
+
+## Admin
+
+- **Conferência do CREF:** o painel exige marcar que a conferência manual foi feita, mas não consulta o CONFEF/CREF. Não há integração oficial conhecida; a conferência é humana.
+- **Mensagem depois do vínculo:** ao criar o vínculo, o item sai da lista "aguardando" e a confirmação aparece como o novo item em "Vínculos ativos".
+- **Dashboard de cupons:** mede usos por cupom e campanha; não há relatório por período.
+
+## Ambiente de testes
+
+- **Instabilidade em aberto:** em 2 de cerca de 10 execuções do E2E, o `next start` de teste parou de responder no meio da suíte, sem erro no log. Depois disso, 3 execuções seguidas passaram (incluindo a suíte completa). A causa não foi encontrada. `tests/e2e/support/stack.ts` agora grava saída de processos em `.tmp/stack.log` para a próxima ocorrência. Não há indício de relação com o código do app, mas isso não está provado.

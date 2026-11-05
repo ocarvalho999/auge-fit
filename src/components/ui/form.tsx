@@ -7,7 +7,9 @@ import {
   useEffect,
   useId,
   useRef,
+  useTransition,
   type ComponentProps,
+  type FormEvent,
   type ReactNode,
 } from "react";
 import { useFormStatus } from "react-dom";
@@ -16,6 +18,7 @@ import { Alert } from "./feedback";
 import { buttonClass } from "./button";
 
 const FormStateContext = createContext<ActionState>({});
+const FormPendingContext = createContext(false);
 
 export function ActionForm({
   action,
@@ -30,7 +33,8 @@ export function ActionForm({
   resetOnSuccess?: boolean;
   onSuccess?: () => void;
 }) {
-  const [state, formAction] = useActionState(action, initialActionState);
+  const [state, formAction, pending] = useActionState(action, initialActionState);
+  const [, startTransition] = useTransition();
   const ref = useRef<HTMLFormElement>(null);
   useEffect(() => {
     if (state.ok) {
@@ -38,13 +42,22 @@ export function ActionForm({
       onSuccess?.();
     }
   }, [state, resetOnSuccess, onSuccess]);
+  // Com a prop action, o React 19 limpa os campos após cada envio, e um erro de validação apagaria o
+  // que a pessoa digitou. Enviamos à mão; a prop action fica para funcionar mesmo sem JavaScript.
+  const onSubmit = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const data = new FormData(event.currentTarget);
+    startTransition(() => formAction(data));
+  };
   return (
     <FormStateContext.Provider value={state}>
-      <form ref={ref} action={formAction} className={className} noValidate>
-        {children}
-        {state.error ? <Alert tone="danger">{state.error}</Alert> : null}
-        {state.message ? <Alert tone="success">{state.message}</Alert> : null}
-      </form>
+      <FormPendingContext.Provider value={pending}>
+        <form ref={ref} action={formAction} onSubmit={onSubmit} className={className} noValidate>
+          {children}
+          {state.error ? <Alert tone="danger">{state.error}</Alert> : null}
+          {state.message ? <Alert tone="success">{state.message}</Alert> : null}
+        </form>
+      </FormPendingContext.Provider>
     </FormStateContext.Provider>
   );
 }
@@ -169,7 +182,10 @@ export function SubmitButton({
   className?: string;
   pendingLabel?: string;
 }) {
-  const { pending } = useFormStatus();
+  // Formulários simples (sem ActionForm) continuam usando o status nativo do React.
+  const status = useFormStatus();
+  const actionPending = useContext(FormPendingContext);
+  const pending = status.pending || actionPending;
   return (
     <button type="submit" disabled={pending} className={buttonClass(variant, className)}>
       {pending ? pendingLabel : children}

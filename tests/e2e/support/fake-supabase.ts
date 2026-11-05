@@ -280,7 +280,14 @@ export async function startFakeSupabase(databaseUrl: string, port: number, appOr
       const colList = cols.map(q).join(", ");
       let conflict = "";
       if (prefer.includes("resolution=")) {
-        const target = params.get("on_conflict");
+        // Sem on_conflict, o PostgREST usa a chave primária.
+        const { rows: pk } = await pool.query<{ attname: string }>(
+          `select a.attname from pg_index i
+           join pg_attribute a on a.attrelid = i.indrelid and a.attnum = any(i.indkey)
+           where i.indrelid = ('public.' || quote_ident($1))::regclass and i.indisprimary`,
+          [name],
+        );
+        const target = params.get("on_conflict") ?? pk.map((c) => c.attname).join(",");
         const tgt = target ? `(${target.split(",").map(q).join(", ")})` : "";
         if (prefer.includes("ignore-duplicates")) conflict = `on conflict ${tgt} do nothing`;
         else conflict = `on conflict ${tgt} do update set ${cols.map((c) => `${q(c)} = excluded.${q(c)}`).join(", ")}`;
@@ -422,6 +429,12 @@ export async function startFakeSupabase(databaseUrl: string, port: number, appOr
           action_link: `${appOrigin}/auth/confirm?token_hash=${token}&type=${data.type}`,
           email_otp: "000000", hashed_token: token, redirect_to: appOrigin, verification_type: data.type,
         });
+      }
+      if (path === "/admin/users" && req.method === "GET") {
+        const page = Number(url.searchParams.get("page") ?? 1);
+        const perPage = Number(url.searchParams.get("per_page") ?? 50);
+        const { rows } = await pool.query<Record<string, unknown>>(`select * from auth.users order by created_at desc limit $1 offset $2`, [perPage, (page - 1) * perPage]);
+        return send(res, 200, { users: rows.map(publicUser), aud: "authenticated" });
       }
       const m = path.match(/^\/admin\/users\/([0-9a-f-]+)$/);
       if (m) {

@@ -34,3 +34,12 @@ Só consta aqui o que foi executado e visto passando.
 - E2E passando: planejamento (rascunho oculto, publicado visível com CREF), check-in com feedback de ponta a ponta, acesso a fotos registrado em `audit_logs`, foto carregada de fato no navegador.
 - **Critério da fase:** profissional sem vínculo não acessa nada do aluno, e vínculo encerrado corta o acesso na hora. Comprovado por E2E e pelos testes de RLS: nenhum dado do aluno aparece na resposta HTML.
 - O convite de profissional entra na fase 6, junto do painel do admin, que é quem convida.
+
+## Fase 6. Painel administrativo
+
+- Usuários, profissionais e CREF, convite, vínculos e vagas, lista de espera, planos e preços, cupons, exercícios e auditoria.
+- **Critério da fase:** admin barrado em prescrição e fotos, comprovado em três camadas por E2E: as rotas redirecionam, o painel não oferece a ação, e chamadas diretas à API com o token do admin são recusadas (fotos vazias, link assinado negado, criação e edição de prescrição sem efeito). Também coberto pelos testes de RLS.
+- E2E passando: convite com CREF conferido até a criação da senha, preço editado refletindo na landing, cupom, exercício só publicável depois da revisão, vínculo do Black iniciando as 8 semanas.
+- **Correção importante:** o React 19 limpava os campos dos formulários depois de cada envio, então um erro de validação apagava o que a pessoa digitou, inclusive no cadastro. Corrigido no `ActionForm` e coberto por teste.
+- **Mudança de projeto:** o convite passou a usar a tabela `staff_invites`, gravada só pelo servidor, em vez de `app_metadata`, para não depender da ordem interna de gravação do Supabase Auth.
+- **Não verificado:** envio real do convite por e-mail (sem Resend, o painel avisa que não enviou) e `generateLink` contra o Supabase Auth real.
