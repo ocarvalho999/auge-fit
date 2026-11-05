@@ -62,3 +62,13 @@ Só consta aqui o que foi executado e visto passando.
   - Pagamento do Black depois de a reserva expirar não voltava a ocupar a vaga.
 - **Auditoria de dependências (`npm audit`):** 0 vulnerabilidades nas dependências de produção. 8 moderadas nas de desenvolvimento, todas ligadas a `minimatch` nas ferramentas de lint; não vão para o servidor nem para o navegador.
 - **Não verificado:** recebimento real de erros no Sentry (sem DSN); cabeçalhos e HSTS sobre HTTPS real.
+
+## Fase 9. Documentação
+
+- README com instalação, variáveis, estrutura e limites dos testes; `docs/OPERACAO.md` com rotina, incidentes e restauração de backup; `docs/CONFIGURACAO_EXTERNA.md` completo.
+- **Critério da fase:** o README foi seguido em um clone limpo, em outra pasta: `npm ci`, typecheck, lint, testes e build passaram. A parte "subir o app de verdade" exige Docker ou Supabase e **não pôde ser executada nesta máquina**.
+
+## Fase 10. Deploy
+
+- **Preparado:** `vercel.json` com rotina diária e região de São Paulo, job de E2E no CI e `docs/CHECKLIST_LANCAMENTO.md`.
+- **Não executado, porque depende de contas e credenciais do fundador:** publicação no GitHub, projeto na Vercel, migrations em homologação e produção, webhook de produção e domínio. O critério "checklist de lançamento conferido" **não está cumprido**: só a parte local foi conferida.
