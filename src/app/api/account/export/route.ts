@@ -26,6 +26,8 @@ export async function GET() {
     supabase.from("payments").select("status, amount_cents, method, paid_at, refunded_at"),
   ]);
 
+  const { data: nutrition } = await supabase.from("nutrition_access").select("whatsapp, granted_at, revoked_at").eq("profile_id", id).maybeSingle();
+
   const body = {
     exported_at: new Date().toISOString(),
     email: auth.user.email,
@@ -39,6 +41,7 @@ export async function GET() {
     progress_photos: photos.data,
     subscriptions: subscriptions.data,
     payments: payments.data,
+    nutrition_access: nutrition,
   };
   return new NextResponse(JSON.stringify(body, null, 2), {
     headers: {

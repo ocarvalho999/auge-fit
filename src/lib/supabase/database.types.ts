@@ -332,6 +332,38 @@ export type Database = {
           { foreignKeyName: "notifications_profile_id_fkey"; columns: ["profile_id"]; isOneToOne: false; referencedRelation: "profiles"; referencedColumns: ["id"] },
         ];
       };
+      nutrition_access: {
+        Row: {
+          id: string;
+          profile_id: string | null;
+          whatsapp: string | null;
+          granted_at: string | null;
+          granted_by: string | null;
+          revoked_at: string | null;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          profile_id?: string | null;
+          whatsapp?: string | null;
+          granted_at?: string | null;
+          granted_by?: string | null;
+          revoked_at?: string | null;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          profile_id?: string | null;
+          whatsapp?: string | null;
+          granted_at?: string | null;
+          granted_by?: string | null;
+          revoked_at?: string | null;
+          created_at?: string;
+        };
+        Relationships: [
+          { foreignKeyName: "nutrition_access_profile_id_fkey"; columns: ["profile_id"]; isOneToOne: false; referencedRelation: "profiles"; referencedColumns: ["id"] },
+        ];
+      };
       payments: {
         Row: {
           id: string;

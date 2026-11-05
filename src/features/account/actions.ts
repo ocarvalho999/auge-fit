@@ -82,6 +82,16 @@ export async function deleteAccountAction(_prev: ActionState, form: FormData): P
     if (removeError) return { error: "Não foi possível apagar suas fotos. A conta não foi excluída. Tente de novo." };
   }
 
+  // Com acesso ativo no FitBrother, o registro fica sem vínculo até a remoção manual; sem acesso, sai agora.
+  const { data: nutrition } = await admin
+    .from("nutrition_access")
+    .select("id, granted_at, revoked_at")
+    .eq("profile_id", profile.id)
+    .maybeSingle();
+  if (nutrition && (!nutrition.granted_at || nutrition.revoked_at)) {
+    await admin.from("nutrition_access").delete().eq("id", nutrition.id);
+  }
+
   await audit({ actorId: profile.id, action: "account.delete", entity: "profiles", entityId: profile.id });
   const { error } = await admin.auth.admin.deleteUser(profile.id);
   if (error) return { error: "Suas fotos foram apagadas, mas a conta não pôde ser excluída. Tente de novo." };

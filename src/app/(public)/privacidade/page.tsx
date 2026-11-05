@@ -22,7 +22,7 @@ export default function PrivacyPage() {
         <li>Profissional: somente com vínculo ativo. Fotos, somente com a sua autorização.</li>
         <li>Administração: não acessa fotos nem respostas de check-in.</li>
         <li>Fornecedores: Supabase, Vercel, Mercado Pago, Resend e Sentry, nos limites do serviço de cada um.</li>
-        <li>FitBrother: os dados de alimentação informados naquele app seguem as regras dele. A forma de integração será definida nesta revisão.</li>
+        <li>FitBrother: no Pro e no Black, seu WhatsApp é usado para enviar e remover o acesso ao app. Os dados de alimentação informados naquele app seguem as regras dele.</li>
       </ul>
       <h2>4. Seus direitos</h2>
       <p>Em Configurações você acessa, corrige, exporta em arquivo, revoga consentimentos e exclui sua conta.</p>

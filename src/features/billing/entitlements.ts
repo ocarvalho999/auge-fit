@@ -2,7 +2,7 @@ import "server-only";
 import { cache } from "react";
 import { createClient } from "@/lib/supabase/server";
 
-export type Feature = "log_workouts" | "progress" | "library" | "programs" | "individual_plan" | "checkins";
+export type Feature = "log_workouts" | "progress" | "library" | "programs" | "nutrition_app" | "individual_plan" | "checkins";
 
 /** Segunda camada de autorização. A RLS confere de novo no banco. */
 export const hasEntitlement = cache(async (userId: string, feature: Feature): Promise<boolean> => {
