@@ -4,16 +4,17 @@ import { LinkButton } from "@/components/ui/button";
 import { Alert, Card } from "@/components/ui/feedback";
 import { Logo } from "@/components/ui/logo";
 import { FEATURE_LABELS, getCatalog, type PlanWithPrices } from "@/features/billing/catalog";
+import { quarterlySavingsCents } from "@/features/billing/domain";
 import { formatCents, INTERVAL_LABEL } from "@/lib/format";
 
-const FAQ = [
+const buildFaq = (proMonthly: string | null) => [
   {
     q: "Existe plano gratuito ou período de teste?",
     a: "Não. Todos os planos são pagos e têm garantia de 7 dias: pediu dentro desse prazo, o reembolso é integral.",
   },
   {
     q: "O app monta meu treino automaticamente?",
-    a: "Não. Você monta o seu próprio treino, usa programas revisados por profissional (Pro e Black) ou recebe um planejamento individual de um profissional habilitado (Black).",
+    a: `Não. O app não gera treino sozinho. No Basic, você monta o seu próprio treino. Programas prontos, revisados por profissional, começam no plano Pro${proMonthly ? ` (${proMonthly} por mês)` : ""}. No Black, um profissional habilitado monta seu planejamento individual.`,
   },
   {
     q: "O que é o app FitBrother, incluído no Pro e no Black?",
@@ -39,6 +40,7 @@ const FAQ = [
 
 function PlanCard({ plan, proSellable, waitlist }: { plan: PlanWithPrices; proSellable: boolean; waitlist: boolean }) {
   const comingSoon = plan.code === "pro" && !proSellable;
+  const savings = quarterlySavingsCents(plan.prices);
   return (
     <Card className={`flex flex-col ${plan.code === "black" ? "ring-1 ring-accent" : ""}`}>
       <h3 className="text-xl font-bold">{plan.name}</h3>
@@ -47,6 +49,9 @@ function PlanCard({ plan, proSellable, waitlist }: { plan: PlanWithPrices; proSe
           <li key={p.id}>
             <span className="text-2xl font-extrabold">{formatCents(p.amount_cents)}</span>{" "}
             <span className="text-sm text-muted">{INTERVAL_LABEL[p.interval]}</span>
+            {p.interval === "quarter" && savings ? (
+              <span className="block text-sm font-semibold text-accent">Economize {formatCents(savings)} no trimestre</span>
+            ) : null}
           </li>
         ))}
       </ul>
@@ -79,6 +84,8 @@ export default async function LandingPage({ searchParams }: { searchParams: Prom
   const { conta } = await searchParams;
   const catalog = await getCatalog();
   const waitlist = process.env.WAITLIST_ENABLED === "true";
+  const proMonthly = catalog?.plans.find((p) => p.code === "pro")?.prices.find((p) => p.interval === "month");
+  const faq = buildFaq(proMonthly ? formatCents(proMonthly.amount_cents) : null);
 
   return (
     <div className="mx-auto w-full max-w-5xl px-4">
@@ -168,7 +175,7 @@ export default async function LandingPage({ searchParams }: { searchParams: Prom
             Perguntas frequentes
           </h2>
           <div className="mt-4 space-y-2">
-            {FAQ.map((item) => (
+            {faq.map((item) => (
               <details key={item.q} className="rounded-xl bg-surface px-4 py-3">
                 <summary className="min-h-6 cursor-pointer font-semibold">{item.q}</summary>
                 <p className="mt-2 text-sm text-muted">{item.a}</p>
@@ -188,7 +195,7 @@ export default async function LandingPage({ searchParams }: { searchParams: Prom
           </section>
         ) : (
           <section className="py-10 text-center">
-            <h2 className="text-2xl font-bold tracking-tight">Pronto para organizar seus treinos?</h2>
+            <h2 className="text-2xl font-bold tracking-tight">Pronto para atingir o seu Auge Físico?</h2>
             <LinkButton href="#planos" className="mt-4 px-6">
               Escolher plano
             </LinkButton>

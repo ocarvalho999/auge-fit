@@ -55,6 +55,8 @@ test("assinatura trimestral: cupom, aguardando confirmação, webhook libera, re
   await expect(page.getByRole("button", { name: /Assinar Pro/ })).toHaveCount(0);
 
   const form = planForm(page, /Assinar Basic: R\$\s*99,90/);
+  await expect(form.getByText(/Economize R\$\s*19,80 no trimestre/)).toBeVisible();
+  await expect(planForm(page, /Assinar Basic: R\$\s*39,90/).getByText(/Economize/)).toHaveCount(0);
   await form.getByLabel("Cupom (opcional)").fill("NAOEXISTE");
   await form.getByRole("button").click();
   await expect(form.getByText("Cupom inválido ou expirado.")).toBeVisible();

@@ -108,3 +108,12 @@ export function checkoutCopy(code: string, planName: string): { title: string; d
   const description = CHECKOUT_DESCRIPTION[code] ?? title;
   return { title, description, reason: `${title}: ${description}` };
 }
+
+/** Economia real do trimestre frente a 3 meses, calculada com os preços do banco. Null se não houver economia. */
+export function quarterlySavingsCents(prices: { interval: string; amount_cents: number }[]): number | null {
+  const month = prices.find((p) => p.interval === "month");
+  const quarter = prices.find((p) => p.interval === "quarter");
+  if (!month || !quarter) return null;
+  const savings = month.amount_cents * 3 - quarter.amount_cents;
+  return savings > 0 ? savings : null;
+}

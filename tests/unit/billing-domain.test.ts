@@ -8,6 +8,7 @@ import {
   mapPaymentStatus,
   mapPreapprovalStatus,
   periodAfterPayment,
+  quarterlySavingsCents,
   toCents,
   webhookEventKey,
 } from "@/features/billing/domain";
@@ -95,6 +96,20 @@ describe("descrição no checkout", () => {
       const { reason } = checkoutCopy(code, code);
       expect(reason.toLowerCase()).not.toMatch(/dieta|emagre|resultado|garant/);
     }
+  });
+});
+
+describe("economia do trimestre", () => {
+  const month = (amount_cents: number) => ({ interval: "month", amount_cents });
+  const quarter = (amount_cents: number) => ({ interval: "quarter", amount_cents });
+  it("compara com 3 meses", () => {
+    expect(quarterlySavingsCents([month(3990), quarter(9990)])).toBe(1980);
+    expect(quarterlySavingsCents([month(9700), quarter(24700)])).toBe(4400);
+  });
+  it("não mostra economia que não existe", () => {
+    expect(quarterlySavingsCents([month(3000), quarter(9000)])).toBeNull();
+    expect(quarterlySavingsCents([month(3000), quarter(9500)])).toBeNull();
+    expect(quarterlySavingsCents([{ interval: "package", amount_cents: 69700 }])).toBeNull();
   });
 });
 

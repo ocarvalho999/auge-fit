@@ -90,3 +90,8 @@ Pedido do fundador em 2026-11-05: incluir no plano médio um app que mede macros
 - **Premissa:** incluído também no Black, que traz todos os recursos dos planos abaixo; sem isso, o plano mais caro apareceria com um benefício riscado. Para tirar, é só mudar `nutrition_app` no Black.
 - **Custo:** o blog anuncia R$ 37,90/mês como preço de fundador, sem preço regular. O custo real por assinante depende do acordo.
 - **Não confirmado:** o site oficial (fitbrother.app) não foi lido, só o blog.
+
+## Texto da landing, decisões do fundador
+
+- **"Pronto para atingir o seu Auge Físico?":** chamada final pedida pelo fundador em 2026-11-05. A especificação diz que o produto promete organização e clareza de progresso, nunca resultado físico. O FAQ segue dizendo que não há garantia de resultado. Avaliar a frase na revisão jurídica.
+- **Economia do trimestre:** calculada com os preços do banco, frente a 3 meses. Se o admin mudar os preços, o valor acompanha; sem economia real, o aviso some.
